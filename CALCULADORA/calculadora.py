@@ -17,7 +17,7 @@ ventana.resizable(0,0)
 ventana.config(bd=10)
 
 #Imagen calculadora
-imagen_calculadora=Image.open("D:/EIGHTA/PYTHON/CALCULADORA/calculadora.png")
+imagen_calculadora=Image.open("D:/EIGHTA/PYTHON-TKINTER/CALCULADORA/calculadora.png")
 nueva_imagen=imagen_calculadora.resize((75,75))
 render=ImageTk.PhotoImage(nueva_imagen)
 label_imagen= Label(ventana, image= render)
