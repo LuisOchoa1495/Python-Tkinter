@@ -13,12 +13,21 @@ from PIL import ImageTk, Image
 "--------------- Ventana --------------------"
 ventana =Tk()
 ventana.title("FORMULARIO DE REGISTRO")
-ventana.geometry("390x480")
+ventana.geometry("390x530")
 ventana.resizable(0,0)
 ventana.config(bd=10)
 
 "--------------- Titulo --------------------"
 titulo= Label(ventana, text="REGISTRO DE USUARIO",fg="black",font=("Fixedsys", 13,"bold"),pady=10).pack()
+
+"--------------- Nuevo usuario logo --------------------"
+imagen_calculadora=Image.open("D:/EIGHTA/PYTHON-TKINTER/1-FORMULARIO/nuevo_usuario.png")
+nueva_imagen=imagen_calculadora.resize((45,45))
+render=ImageTk.PhotoImage(nueva_imagen)
+label_imagen= Label(ventana, image= render)
+label_imagen.image=render
+label_imagen.pack(pady=5)
+
 
 "--------------- Marco --------------------"
 marco = LabelFrame(ventana, text="Datos personales",font=("Fixedsys", 10,))
