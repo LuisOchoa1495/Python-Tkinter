@@ -13,7 +13,8 @@ from PIL import ImageTk, Image
 import sqlite3
 
 class Registro:
-    db_name='database.db'
+    db_name='database_proyecto.db'
+    
     def __init__(self,ventana):
         self.window=ventana   
         self.window.title("FORMULARIO DE REGISTRO")
@@ -25,7 +26,7 @@ class Registro:
         titulo= Label(ventana, text="REGISTRO DE USUARIO",fg="black",font=("Comic Sans", 13,"bold"),pady=10).pack()
 
         "--------------- Nuevo usuario logo --------------------"
-        imagen_calculadora=Image.open("D:/EIGHTA/PYTHON-TKINTER/1-FORMULARIO/nuevo_usuario.png")
+        imagen_calculadora=Image.open("D:/EIGHTA/PYTHON-TKINTER/SISTEMA DESKTOP/nuevo_usuario.png")
         nueva_imagen=imagen_calculadora.resize((40,40))
         render=ImageTk.PhotoImage(nueva_imagen)
         label_imagen= Label(ventana, image= render)
@@ -85,7 +86,7 @@ class Registro:
             cursor=conexion.cursor()
             result=cursor.execute(query,parameters)
             conexion.commit()
-        return result
+        return result 
     
     def Limpiar_formulario(self):
         self.dni.delete(0, END)
@@ -97,14 +98,44 @@ class Registro:
         self.password.delete(0, END)
         self.repetir_password.delete(0, END)
         
+        
+    def Validar_formulario_completo(self):
+        if len(self.dni.get()) !=0 and len(self.nombres.get()) !=0 and len(self.apellidos.get()) !=0 and len(self.combo_sexo.get()) !=0 and len(self.edad.get()) !=0 and len(self.password.get()) !=0 and len(self.repetir_password.get()) and len(self.correo.get()):
+            return True
+        else:
+             messagebox.showerror("ERROR EN REGISTRO", "Complete todos los campos del formulario")
+    def Validar_contraseña(self):
+        if(str(self.password.get()) == str(self.repetir_password.get())):
+            return True
+        else:
+            messagebox.showerror("ERROR EN REGISTRO", "Contraseñas no coinciden")
+ 
+    def Buscar_dni(self, dni):
+        with sqlite3.connect(self.db_name) as conexion:
+            cursor=conexion.cursor()
+            sql="SELECT * FROM Usuarios WHERE DNI = {}".format(dni)
+            cursor.execute(sql)
+            dnix= cursor.fetchall() # obtener respuesta como lista
+            cursor.close()
+            return dnix
+    
+    def Validar_dni(self):
+        dni= self.dni.get()
+        dato = self.Buscar_dni(dni)
+        if (dato == []):
+            return True
+        else:
+            messagebox.showerror("ERROR EN REGISTRO", "DNI registrado anteriormente")
+
     def Registrar_usuario(self):
-        query='INSERT INTO Usuario VALUES(NULL, ?, ?, ?, ?, ?, ?, ?)'
-        parameters = (self.dni.get(),self.nombres.get(),self.apellidos.get(),self.combo_sexo.get(),self.edad.get(),self.correo.get(),self.password.get())
-        self.Ejecutar_consulta(query, parameters)
-        messagebox.showinfo("Registro Exitoso", f'Bienvenido {self.nombres.get()} {self.apellidos.get()}')
-        print('USUARIO CREADO')
-        self.Limpiar_formulario()
-              
+        if self.Validar_formulario_completo() and self.Validar_contraseña() and self.Validar_dni():
+            query='INSERT INTO Usuarios VALUES(NULL, ?, ?, ?, ?, ?, ?, ?)'
+            parameters = (self.dni.get(),self.nombres.get(),self.apellidos.get(),self.combo_sexo.get(),self.edad.get(),self.correo.get(),self.password.get())
+            self.Ejecutar_consulta(query, parameters)
+            messagebox.showinfo("REGISTRO EXITOSO", f'Bienvenido {self.nombres.get()} {self.apellidos.get()}')
+            print('USUARIO CREADO')
+            self.Limpiar_formulario()
+            
 if __name__ == '__main__':
     ventana=Tk()
     application=Registro(ventana)
