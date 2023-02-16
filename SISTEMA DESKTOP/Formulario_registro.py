@@ -15,7 +15,7 @@ import sqlite3
 class Registro:
     db_name='database_proyecto.db'
     
-    def __init__(self,ventana):
+    def __init__(self,vetana):
         self.window=ventana   
         self.window.title("FORMULARIO DE REGISTRO")
         self.window.geometry("390x540")

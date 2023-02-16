@@ -13,13 +13,13 @@ from Formulario_registro import Registro
 
 import sqlite3
 
-class Registro:
+class Login:
     db_name='database_proyecto.db'
     
     def __init__(self,ventana_login):
         self.window=ventana_login  
         self.window.title("INGRESAR AL SISTEMA")
-        self.window.geometry("350x370")
+        self.window.geometry("330x370")
         self.window.resizable(0,0)
         self.window.config(bd=10)
         
@@ -54,12 +54,18 @@ class Registro:
         frame_botones.pack()
 
         "--------------- Botones --------------------"
-        boton_ingresar=Button(frame_botones,text="INGRESAR",command=ventana_login.quit,height=2,width=10,bg="green",fg="white",font=("Comic Sans", 10,"bold")).grid(row=0, column=1, padx=10, pady=15)
-        boton_registrar=Button(frame_botones,text="REGISTRAR",command=ventana_login.quit,height=2,width=10,bg="blue",fg="white",font=("Comic Sans", 10,"bold")).grid(row=0, column=2, padx=10, pady=15)
+        boton_ingresar=Button(frame_botones,text="INGRESAR",command=ventana_login.quit,height=2,width=12,bg="green",fg="white",font=("Comic Sans", 10,"bold")).grid(row=0, column=1, padx=10, pady=15)
+        boton_registrar=Button(frame_botones,text="REGISTRAR",command=self.LLamar_registro,height=2,width=12,bg="blue",fg="white",font=("Comic Sans", 10,"bold")).grid(row=0, column=2, padx=10, pady=15)
         label_=Label(frame_botones,text="⬇ ¿Olvido su contraseña? ⬇",font=("Comic Sans", 10,"bold")).grid(row=1,column=1,columnspan=2,sticky='s')
-        boton_olvido=Button(frame_botones,text="RECUPERAR CONTRASEÑA",command=ventana_login.quit ,height=2,width=22,bg="gray",fg="white",font=("Comic Sans", 10,"bold")).grid(row=2, column=1, columnspan=2, padx=10, pady=8)
-        
+        boton_olvido=Button(frame_botones,text="RECUPERAR CONTRASEÑA",command=ventana_login.quit ,height=2,width=24,bg="gray",fg="white",font=("Comic Sans", 10,"bold")).grid(row=2, column=1, columnspan=2, padx=10, pady=8)
+    
+    def LLamar_registro(self):
+        registro=Registro()
+        registro.application()
+        ventana_login.destroy()
+
 if __name__ == '__main__':
     ventana_login=Tk()
-    application=Registro(ventana_login)
+    application=Login(ventana_login)
     ventana_login.mainloop()
+
