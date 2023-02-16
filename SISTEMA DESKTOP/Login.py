@@ -9,7 +9,8 @@ from tkinter import ttk
 from tkinter import messagebox 
 #Python image Library
 from PIL import ImageTk, Image
-from Formulario_registro import Registro
+from subprocess import call
+import sys
 
 import sqlite3
 
@@ -60,9 +61,8 @@ class Login:
         boton_olvido=Button(frame_botones,text="RECUPERAR CONTRASEÑA",command=ventana_login.quit ,height=2,width=24,bg="gray",fg="white",font=("Comic Sans", 10,"bold")).grid(row=2, column=1, columnspan=2, padx=10, pady=8)
     
     def LLamar_registro(self):
-        registro=Registro()
-        registro.application()
-        ventana_login.destroy()
+        ventana_login.destroy()    
+        call([sys.executable, 'D:/EIGHTA/PYTHON-TKINTER/SISTEMA DESKTOP/Formulario_registro.py', 'htmlfilename.htm'])
 
 if __name__ == '__main__':
     ventana_login=Tk()
