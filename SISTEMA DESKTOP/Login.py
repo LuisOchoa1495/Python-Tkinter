@@ -82,11 +82,12 @@ class Login:
                 messagebox.showinfo("BIENVENIDO", "Datos ingresados correctamente")  
             else:
                 messagebox.showerror("ERROR DE INGRESO", "DNI o contraseña incorrecto") 
-                   
+    #call              
     def LLamar_registro(self):
         ventana_login.destroy()    
         call([sys.executable, 'D:/EIGHTA/PYTHON-TKINTER/SISTEMA DESKTOP/Formulario_registro.py', 'htmlfilename.htm'])
-    
+ 
+#ventana   
 if __name__ == '__main__':
     ventana_login=Tk()
     application=Login(ventana_login)
