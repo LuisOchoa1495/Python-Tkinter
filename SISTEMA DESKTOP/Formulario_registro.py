@@ -100,7 +100,7 @@ class Registro:
         
         
     def Validar_formulario_completo(self):
-        if len(self.dni.get()) !=0 and len(self.nombres.get()) !=0 and len(self.apellidos.get()) !=0 and len(self.combo_sexo.get()) !=0 and len(self.edad.get()) !=0 and len(self.password.get()) !=0 and len(self.repetir_password.get()) and len(self.correo.get()):
+        if len(self.dni.get()) !=0 and len(self.nombres.get()) !=0 and len(self.apellidos.get()) !=0 and len(self.combo_sexo.get()) !=0 and len(self.edad.get()) !=0 and len(self.password.get()) !=0 and len(self.repetir_password.get()) !=0 and len(self.correo.get()) !=0:
             return True
         else:
              messagebox.showerror("ERROR EN REGISTRO", "Complete todos los campos del formulario")

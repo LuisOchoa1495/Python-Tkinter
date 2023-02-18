@@ -1,7 +1,7 @@
 """
 FORMULARIO DE LOGIN
 Ingresar al sistema con su dni y contraseña
-
+Mostrar messagebox
 """
 from tkinter import *
 from tkinter import ttk
@@ -58,10 +58,6 @@ class Login:
         label_=Label(frame_botones,text="⬇ ¿Olvido su contraseña? ⬇",font=("Comic Sans", 10,"bold")).grid(row=1,column=1,columnspan=2,sticky='s')
         boton_olvido=Button(frame_botones,text="RECUPERAR CONTRASEÑA",command=ventana_login.quit ,height=2,width=24,bg="gray",fg="white",font=("Comic Sans", 10,"bold")).grid(row=2, column=1, columnspan=2, padx=10, pady=8)
     
-    def LLamar_registro(self):
-        ventana_login.destroy()    
-        call([sys.executable, 'D:/EIGHTA/PYTHON-TKINTER/SISTEMA DESKTOP/Formulario_registro.py', 'htmlfilename.htm'])
-
     def Validar_login(self, dni, password):
         with sqlite3.connect(self.db_name) as conexion:
             cursor=conexion.cursor()
@@ -71,14 +67,25 @@ class Login:
             cursor.close()
             return validacion
         
-    def Login(self):
-        dni= self.dni.get()
-        password= self.password.get()
-        dato = self.Validar_login(dni, password)
-        if ( dato != []):
-            messagebox.showinfo("BIENVENIDO", "Datos ingresados correctamente")  
+    def Validar_formulario_completo(self):
+        if len(self.dni.get()) !=0 and len(self.password.get()) !=0:
+            return True
         else:
-            messagebox.showerror("ERROR DE INGRESO", "DNI o contraseña incorrecto")        
+             messagebox.showerror("ERROR DE INGRESO", "Ingrese su DNI y contraseña!!!")    
+    
+    def Login(self):
+        if(self.Validar_formulario_completo()):
+            dni= self.dni.get()
+            password= self.password.get()
+            dato = self.Validar_login(dni, password)
+            if (dato != []):
+                messagebox.showinfo("BIENVENIDO", "Datos ingresados correctamente")  
+            else:
+                messagebox.showerror("ERROR DE INGRESO", "DNI o contraseña incorrecto") 
+                   
+    def LLamar_registro(self):
+        ventana_login.destroy()    
+        call([sys.executable, 'D:/EIGHTA/PYTHON-TKINTER/SISTEMA DESKTOP/Formulario_registro.py', 'htmlfilename.htm'])
     
 if __name__ == '__main__':
     ventana_login=Tk()
