@@ -61,7 +61,7 @@ class Login:
     def Validar_login(self, dni, password):
         with sqlite3.connect(self.db_name) as conexion:
             cursor=conexion.cursor()
-            sql="SELECT * FROM Usuarios WHERE DNI = {} AND Contraseña = {}".format(dni,password)
+            sql= f"SELECT * FROM Usuarios WHERE DNI = {dni} AND Contraseña = '{password}'"
             cursor.execute(sql)
             validacion= cursor.fetchall() # obtener respuesta como lista
             cursor.close()
@@ -85,7 +85,7 @@ class Login:
     #call              
     def LLamar_registro(self):
         ventana_login.destroy()    
-        call([sys.executable, 'D:/EIGHTA/PYTHON-TKINTER/SISTEMA DESKTOP/Formulario_registro.py', 'htmlfilename.htm'])
+        call([sys.executable, 'D:/EIGHTA/PYTHON-TKINTER/SISTEMA DESKTOP/1-Formulario_registro.py', 'htmlfilename.htm'])
  
 #ventana   
 if __name__ == '__main__':
