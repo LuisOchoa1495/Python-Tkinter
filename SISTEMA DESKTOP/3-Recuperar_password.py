@@ -18,7 +18,7 @@ class Recuperar_contraseña:
     def __init__(self,vetana):
         self.window=ventana   
         self.window.title("RECUPERAR CONTASEÑA")
-        self.window.geometry("400x420")
+        self.window.geometry("410x420")
         self.window.resizable(0,0)
         self.window.config(bd=10)
         
@@ -108,8 +108,8 @@ class Recuperar_contraseña:
     def Validar_datos_usuario(self):
         dni= self.dni.get()
         respuesta=self.respuesta.get()
-        dato = self.Buscar_usuario(dni, respuesta)
-        if (dato != []):
+        busqueda = self.Buscar_usuario(dni, respuesta)
+        if (busqueda != []):
             return True
         else:
             messagebox.showerror("ERROR DE RECUPERACION", "Datos de recuperacion no son correctos")

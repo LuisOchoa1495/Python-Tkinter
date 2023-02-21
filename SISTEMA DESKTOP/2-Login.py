@@ -56,7 +56,7 @@ class Login:
         boton_ingresar=Button(frame_botones,text="INGRESAR",command=self.Login,height=2,width=12,bg="green",fg="white",font=("Comic Sans", 10,"bold")).grid(row=0, column=1, padx=10, pady=15)
         boton_registrar=Button(frame_botones,text="REGISTRAR",command=self.LLamar_registro,height=2,width=12,bg="blue",fg="white",font=("Comic Sans", 10,"bold")).grid(row=0, column=2, padx=10, pady=15)
         label_=Label(frame_botones,text="⬇ ¿Olvido su contraseña? ⬇",font=("Comic Sans", 10,"bold")).grid(row=1,column=1,columnspan=2,sticky='s')
-        boton_olvido=Button(frame_botones,text="RECUPERAR CONTRASEÑA",command=ventana_login.quit ,height=2,width=24,bg="gray",fg="white",font=("Comic Sans", 10,"bold")).grid(row=2, column=1, columnspan=2, padx=10, pady=8)
+        boton_olvido=Button(frame_botones,text="RECUPERAR CONTRASEÑA",command=self.LLamar_recuperar ,height=2,width=24,bg="gray",fg="white",font=("Comic Sans", 10,"bold")).grid(row=2, column=1, columnspan=2, padx=10, pady=8)
     
     def Validar_login(self, dni, password):
         with sqlite3.connect(self.db_name) as conexion:
@@ -82,10 +82,15 @@ class Login:
                 messagebox.showinfo("BIENVENIDO", "Datos ingresados correctamente")  
             else:
                 messagebox.showerror("ERROR DE INGRESO", "DNI o contraseña incorrecto") 
-    #call              
+    #call registro              
     def LLamar_registro(self):
         ventana_login.destroy()    
         call([sys.executable, 'D:/EIGHTA/PYTHON-TKINTER/SISTEMA DESKTOP/1-Formulario_registro.py', 'htmlfilename.htm'])
+
+    #call recuperar        
+    def LLamar_recuperar(self):
+        ventana_login.destroy()    
+        call([sys.executable, 'D:/EIGHTA/PYTHON-TKINTER/SISTEMA DESKTOP/3-Recuperar_password.py', 'htmlfilename.htm'])
  
 #ventana   
 if __name__ == '__main__':
