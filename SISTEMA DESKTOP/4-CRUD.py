@@ -1,6 +1,6 @@
 """
-FORMULARIO DE RECUPERACION DE CONTRASEÑA
--Registro de usuario y contraseña
+CRUD-PRODUCTOS
+-Registro de Prouctos
 -Guardar en bd SQlite
 
 """
@@ -13,37 +13,58 @@ from subprocess import call
 import sys
 import sqlite3
 
-class Recuperar_contraseña:
+class Producto:
     db_name='database_proyecto.db'
     
     def __init__(self, ventana_recuperar):
         self.window=ventana_recuperar   
-        self.window.title("RECUPERAR CONTASEÑA")
-        self.window.geometry("410x420")
+        self.window.title("APLICACION")
+        self.window.geometry("520x600")
         self.window.resizable(0,0)
         self.window.config(bd=10)
         
         "--------------- Titulo --------------------"
-        titulo= Label(ventana_recuperar, text="RECUPERAR CONTRASEÑA",fg="black",font=("Comic Sans", 13,"bold"),pady=8).pack()
+        titulo= Label(ventana_recuperar, text="PRODUCTOS ELECTRONICOS",fg="black",font=("Comic Sans", 17,"bold"),pady=10).pack()
 
-        "--------------- Recuperar password logo --------------------"
-        imagen_password=Image.open("D:/EIGHTA/PYTHON-TKINTER/SISTEMA DESKTOP/Imagenes/recuperar_contraseña.png")
-        nueva_imagen=imagen_password.resize((60,60))
+        "--------------- Logos productos --------------------"
+        frame_logo_productos = LabelFrame(ventana_recuperar)
+        frame_logo_productos.config(bd=0)
+        frame_logo_productos.pack()
+
+        #Logo arduino
+        imagen_arduino=Image.open("D:/EIGHTA/PYTHON-TKINTER/SISTEMA DESKTOP/Imagenes/arduino-logo.png")
+        nueva_imagen=imagen_arduino.resize((60,60))
         render=ImageTk.PhotoImage(nueva_imagen)
-        label_imagen= Label(ventana_recuperar, image= render)
+        label_imagen= Label(frame_logo_productos, image= render)
         label_imagen.image=render
-        label_imagen.pack(pady=5)
+        label_imagen.grid(row=0, column=0,padx=15,pady=5)
 
-        "--------------- Marco --------------------"
-        marco = LabelFrame(ventana_recuperar, text="Datos de recuperacion",font=("Comic Sans", 10,"bold"))
+
+        #Logo nodemcu
+        imagen_nodemcu=Image.open("D:/EIGHTA/PYTHON-TKINTER/SISTEMA DESKTOP/Imagenes/nodemcu-logo.png")
+        nueva_imagen=imagen_nodemcu.resize((60,60))
+        render=ImageTk.PhotoImage(nueva_imagen)
+        label_imagen= Label(frame_logo_productos, image= render)
+        label_imagen.image=render
+        label_imagen.grid(row=0, column=1,padx=15,pady=5)
+        
+        #Logo raspberry
+        imagen_raspberry=Image.open("D:/EIGHTA/PYTHON-TKINTER/SISTEMA DESKTOP/Imagenes/raspberry-logo.png")
+        nueva_imagen=imagen_raspberry.resize((60,60))
+        render=ImageTk.PhotoImage(nueva_imagen)
+        label_imagen= Label(frame_logo_productos, image= render)
+        label_imagen.image=render
+        label_imagen.grid(row=0, column=2,padx=15,pady=5)
+
+        "--------------- Frame marco --------------------"
+        marco = LabelFrame(ventana_recuperar, text="Registro del producto",font=("Comic Sans", 10,"bold"),pady=5)
         marco.config(bd=2)
         marco.pack()
 
         "--------------- Formulario --------------------"
-        label_dni=Label(marco,text="DNI: ",font=("Comic Sans", 10,"bold")).grid(row=0,column=0,sticky='s',padx=5,pady=8)
-        self.dni=Entry(marco,width=25)
-        self.dni.focus()
-        self.dni.grid(row=0, column=1, padx=5, pady=8)
+        label_nombre=Label(marco,text="Nombre del producto: ",font=("Comic Sans", 10,"bold")).grid(row=0,column=0,sticky='s',padx=5,pady=8)
+        self.nombre=Entry(marco,width=25)
+        self.nombre.grid(row=0, column=1, padx=5, pady=8)
         
         label_nota=Label(marco,text="*Seleccione una pregunta y brinde la respuesta correcta.",font=("Comic Sans", 9,"bold"),foreground="blue").grid(row=1,column=0,columnspan=2,sticky='s',padx=8)
 
@@ -69,8 +90,8 @@ class Recuperar_contraseña:
         frame_botones.pack()
 
         "--------------- Botones --------------------"
-        boton_recuperar=Button(frame_botones,text="RECUPERAR",command=self.Restablecer_contraseña ,height=2,width=10,bg="green",fg="white",font=("Comic Sans", 10,"bold")).grid(row=0, column=1, padx=10, pady=10)
-        boton_cancelar=Button(frame_botones,text="CANCELAR",command=self.LLamar_login ,height=2,width=10,bg="red",fg="white",font=("Comic Sans", 10,"bold")).grid(row=0, column=3, padx=10, pady=10)
+        boton_recuperar=Button(frame_botones,text="REGISTRAR",command=self.Restablecer_contraseña ,height=2,width=10,bg="green",fg="white",font=("Comic Sans", 10,"bold")).grid(row=0, column=1, padx=10, pady=10)
+        boton_cancelar=Button(frame_botones,text="LIMPIAR",command=self.LLamar_login ,height=2,width=10,bg="red",fg="white",font=("Comic Sans", 10,"bold")).grid(row=0, column=3, padx=10, pady=10)
         
     def Ejecutar_consulta(self, query, parameters=()):
         with sqlite3.connect(self.db_name) as conexion:
@@ -131,5 +152,5 @@ class Recuperar_contraseña:
             
 if __name__ == '__main__':
     ventana_recuperar=Tk()
-    application=Recuperar_contraseña(ventana_recuperar)
+    application=Producto(ventana_recuperar)
     ventana_recuperar.mainloop()

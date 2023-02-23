@@ -25,9 +25,9 @@ class Login:
         "--------------- Titulo --------------------"
         titulo= Label(ventana_login, text="INICIAR SESION",fg="black",font=("Comic Sans", 13,"bold"),pady=10).pack()
 
-        "--------------- Nuevo usuario logo --------------------"
-        imagen_calculadora=Image.open("D:/EIGHTA/PYTHON-TKINTER/SISTEMA DESKTOP/login.png")
-        nueva_imagen=imagen_calculadora.resize((40,40))
+        "--------------- Loginlogo --------------------"
+        imagen_login=Image.open("D:/EIGHTA/PYTHON-TKINTER/SISTEMA DESKTOP/Imagenes/login.png")
+        nueva_imagen=imagen_login.resize((40,40))
         render=ImageTk.PhotoImage(nueva_imagen)
         label_imagen= Label(ventana_login, image= render)
         label_imagen.image=render
@@ -42,6 +42,7 @@ class Login:
         "--------------- Formulario --------------------"
         label_dni=Label(marco,text="DNI: ",font=("Comic Sans", 10,"bold")).grid(row=0,column=0,sticky='s',padx=5,pady=10)
         self.dni=Entry(marco,width=25)
+        self.dni.focus()
         self.dni.grid(row=0, column=1, padx=5, pady=10)
 
         label_nombres=Label(marco,text="Contraseña: ",font=("Comic Sans", 10,"bold")).grid(row=1,column=0,sticky='s',padx=10,pady=10)
@@ -92,7 +93,7 @@ class Login:
         ventana_login.destroy()    
         call([sys.executable, 'D:/EIGHTA/PYTHON-TKINTER/SISTEMA DESKTOP/3-Recuperar_password.py', 'htmlfilename.htm'])
  
-#ventana   
+#verificar si el modulo ha sido ejecutado correctamente  
 if __name__ == '__main__':
     ventana_login=Tk()
     application=Login(ventana_login)

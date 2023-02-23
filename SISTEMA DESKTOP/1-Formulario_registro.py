@@ -26,8 +26,8 @@ class Registro:
         titulo= Label(ventana, text="REGISTRO DE USUARIO",fg="black",font=("Comic Sans", 13,"bold"),pady=5).pack()
 
         "--------------- Nuevo usuario logo --------------------"
-        imagen_calculadora=Image.open("D:/EIGHTA/PYTHON-TKINTER/SISTEMA DESKTOP/nuevo_usuario.png")
-        nueva_imagen=imagen_calculadora.resize((40,40))
+        imagen_registro=Image.open("D:/EIGHTA/PYTHON-TKINTER/SISTEMA DESKTOP/Imagenes/nuevo_usuario.png")
+        nueva_imagen=imagen_registro.resize((40,40))
         render=ImageTk.PhotoImage(nueva_imagen)
         label_imagen= Label(ventana, image= render)
         label_imagen.image=render
@@ -42,6 +42,7 @@ class Registro:
         "--------------- Formulario --------------------"
         label_dni=Label(marco,text="DNI: ",font=("Comic Sans", 10,"bold")).grid(row=0,column=0,sticky='s',padx=5,pady=8)
         self.dni=Entry(marco,width=25)
+        self.dni.focus()
         self.dni.grid(row=0, column=1, padx=5, pady=8)
 
         label_nombres=Label(marco,text="Nombre: ",font=("Comic Sans", 10,"bold")).grid(row=1,column=0,sticky='s',padx=10,pady=8)
