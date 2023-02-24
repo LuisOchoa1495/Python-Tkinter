@@ -19,12 +19,12 @@ class Producto:
     def __init__(self, ventana_producto):
         self.window=ventana_producto   
         self.window.title("APLICACION")
-        self.window.geometry("720x700")
+        self.window.geometry("800x690")
         self.window.resizable(0,0)
         self.window.config(bd=10)
         
         "--------------- Titulo --------------------"
-        titulo= Label(ventana_producto, text="PRODUCTOS ELECTRONICOS",fg="black",font=("Comic Sans", 17,"bold"),pady=10).pack()
+        titulo= Label(ventana_producto, text="REGISTRO DE PRODCUTOS ELECTRONICOS",fg="black",font=("Comic Sans", 17,"bold"),pady=10).pack()
 
         "--------------- Logos productos --------------------"
         frame_logo_productos = LabelFrame(ventana_producto)
@@ -57,7 +57,7 @@ class Producto:
         label_imagen.grid(row=0, column=2,padx=15,pady=5)
 
         "--------------- Frame marco --------------------"
-        marco = LabelFrame(ventana_producto, text="Registro del producto",font=("Comic Sans", 10,"bold"),pady=5)
+        marco = LabelFrame(ventana_producto, text="Informacion del producto",font=("Comic Sans", 10,"bold"),pady=5)
         marco.config(bd=2)
         marco.pack()
 
@@ -81,7 +81,7 @@ class Producto:
         self.cantidad=Entry(marco,width=25)
         self.cantidad.grid(row=0, column=3, padx=5, pady=8)
 
-        label_precio=Label(marco,text="Precio: ",font=("Comic Sans", 10,"bold")).grid(row=1,column=2,sticky='s',padx=5,pady=8)
+        label_precio=Label(marco,text="Precio (S/.): ",font=("Comic Sans", 10,"bold")).grid(row=1,column=2,sticky='s',padx=5,pady=8)
         self.nuevo_precio=Entry(marco,width=25)
         self.nuevo_precio.grid(row=1, column=3, padx=5, pady=8)
 
@@ -94,15 +94,31 @@ class Producto:
         frame_botones.pack()
 
         "--------------- Botones --------------------"
-        #iconos
+        boton_registrar=Button(frame_botones,text="REGISTRAR",command=self.Restablecer_contraseña,height=2,width=10,bg="green",fg="white",font=("Comic Sans", 10,"bold")).grid(row=0, column=1, padx=10, pady=15)
+        boton_editar=Button(frame_botones,text="EDITAR",command=self.Restablecer_contraseña ,height=2,width=10,bg="gray",fg="white",font=("Comic Sans", 10,"bold")).grid(row=0, column=2, padx=10, pady=15)
+        boton_eliminar=Button(frame_botones,text="ELIMINAR",command=ventana_producto.quit,height=2,width=10,bg="red",fg="white",font=("Comic Sans", 10,"bold")).grid(row=0, column=3, padx=10, pady=15)
+
+        "--------------- Tabla --------------------"    
+        self.tree=ttk.Treeview(height=13, columns=("columna1","columna2","columna3","columna4","columna5"))
+        self.tree.heading("#0",text='Codigo', anchor=CENTER)
+        self.tree.column("#0", width=90, minwidth=75, stretch=NO)
         
-        icono_boton_agregar = PhotoImage(file="D:/EIGHTA/PYTHON-TKINTER/SISTEMA DESKTOP/Imagenes/agregar.png")
+        self.tree.heading("columna1",text='Nombre', anchor=CENTER)
+        self.tree.column("columna1", width=150, minwidth=75, stretch=NO)
         
+        self.tree.heading("columna2",text='Categoria', anchor=CENTER)
+        self.tree.column("columna2", width=150, minwidth=75, stretch=NO)
+                
+        self.tree.heading("columna3",text='Cantidad', anchor=CENTER)
+        self.tree.column("columna3", width=70, minwidth=60, stretch=NO)
         
-        boton_registrar=Button(frame_botones,text="REGISTRAR",command=self.Restablecer_contraseña,height=2,width=10,bg="green",fg="white",font=("Comic Sans", 10,"bold")).grid(row=0, column=1, padx=10, pady=10)
-        boton_editar=Button(frame_botones,text="EDITAR",command=self.Restablecer_contraseña ,height=2,width=10,bg="gray",fg="white",font=("Comic Sans", 10,"bold")).grid(row=0, column=2, padx=10, pady=10)
-        boton_eliminar=Button(frame_botones,text="ELIMINAR",command=ventana_producto.quit,height=2,width=10,bg="red",fg="white",font=("Comic Sans", 10,"bold")).grid(row=0, column=3, padx=10, pady=10)
+        self.tree.heading("columna4",text='Precio', anchor=CENTER)
+        self.tree.column("columna4", width=70, minwidth=60, stretch=NO)
         
+        self.tree.heading("columna5",text='Descripcion', anchor=CENTER)
+        
+        self.tree.pack()
+           
     def Ejecutar_consulta(self, query, parameters=()):
         with sqlite3.connect(self.db_name) as conexion:
             cursor=conexion.cursor()
