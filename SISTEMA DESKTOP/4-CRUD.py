@@ -16,18 +16,18 @@ import sqlite3
 class Producto:
     db_name='database_proyecto.db'
     
-    def __init__(self, ventana_recuperar):
-        self.window=ventana_recuperar   
+    def __init__(self, ventana_producto):
+        self.window=ventana_producto   
         self.window.title("APLICACION")
-        self.window.geometry("520x600")
+        self.window.geometry("720x700")
         self.window.resizable(0,0)
         self.window.config(bd=10)
         
         "--------------- Titulo --------------------"
-        titulo= Label(ventana_recuperar, text="PRODUCTOS ELECTRONICOS",fg="black",font=("Comic Sans", 17,"bold"),pady=10).pack()
+        titulo= Label(ventana_producto, text="PRODUCTOS ELECTRONICOS",fg="black",font=("Comic Sans", 17,"bold"),pady=10).pack()
 
         "--------------- Logos productos --------------------"
-        frame_logo_productos = LabelFrame(ventana_recuperar)
+        frame_logo_productos = LabelFrame(ventana_producto)
         frame_logo_productos.config(bd=0)
         frame_logo_productos.pack()
 
@@ -57,41 +57,51 @@ class Producto:
         label_imagen.grid(row=0, column=2,padx=15,pady=5)
 
         "--------------- Frame marco --------------------"
-        marco = LabelFrame(ventana_recuperar, text="Registro del producto",font=("Comic Sans", 10,"bold"),pady=5)
+        marco = LabelFrame(ventana_producto, text="Registro del producto",font=("Comic Sans", 10,"bold"),pady=5)
         marco.config(bd=2)
         marco.pack()
 
         "--------------- Formulario --------------------"
-        label_nombre=Label(marco,text="Nombre del producto: ",font=("Comic Sans", 10,"bold")).grid(row=0,column=0,sticky='s',padx=5,pady=8)
-        self.nombre=Entry(marco,width=25)
-        self.nombre.grid(row=0, column=1, padx=5, pady=8)
+        label_codigo=Label(marco,text="Codigo del producto: ",font=("Comic Sans", 10,"bold")).grid(row=0,column=0,sticky='s',padx=5,pady=8)
+        self.codigo=Entry(marco,width=25)
+        self.codigo.focus()
+        self.codigo.grid(row=0, column=1, padx=5, pady=8)
         
-        label_nota=Label(marco,text="*Seleccione una pregunta y brinde la respuesta correcta.",font=("Comic Sans", 9,"bold"),foreground="blue").grid(row=1,column=0,columnspan=2,sticky='s',padx=8)
+        label_nombre=Label(marco,text="Nombre del producto: ",font=("Comic Sans", 10,"bold")).grid(row=1,column=0,sticky='s',padx=5,pady=8)
+        self.nombre=Entry(marco,width=25)
+        self.nombre.grid(row=1, column=1, padx=5, pady=8)
+        
+        label_categoria=Label(marco,text="Categoria: ",font=("Comic Sans", 10,"bold")).grid(row=2,column=0,sticky='s',padx=5,pady=9)
+        self.combo_categoria=ttk.Combobox(marco,values=["Microcontrolador","Microoedenador","Sensores","Accesorios"], width=22,state="readonly")
+        self.combo_categoria.current(0)
+        self.combo_categoria.grid(row=2,column=1,padx=5,pady=0)
 
-        label_pregunta=Label(marco,text="Pregunta: ",font=("Comic Sans", 10,"bold")).grid(row=2,column=0,sticky='s',padx=5,pady=8)
-        self.combo_pregunta=ttk.Combobox(marco,values=["¿Nombre de tu primera mascota?","¿Lugar dónde fuiste al colegio?","¿En que ciudad naciste?","¿Cómo se llama tu equipo favorito?"], width=30,state="readonly")
-        self.combo_pregunta.current(0)
-        self.combo_pregunta.grid(row=2,column=1,padx=5,pady=8)
 
-        label_respuesta=Label(marco,text="Respuesta: ",font=("Comic Sans", 10,"bold")).grid(row=3,column=0,sticky='s',padx=5,pady=8)
-        self.respuesta=Entry(marco,width=33)
-        self.respuesta.grid(row=3, column=1, padx=5, pady=8)
+        label_cantidad=Label(marco,text="Cantidad: ",font=("Comic Sans", 10,"bold")).grid(row=0,column=2,sticky='s',padx=5,pady=8)
+        self.cantidad=Entry(marco,width=25)
+        self.cantidad.grid(row=0, column=3, padx=5, pady=8)
 
-        label_password=Label(marco,text="Nueva Contraseña: ",font=("Comic Sans", 10,"bold")).grid(row=4,column=0,sticky='s',padx=5,pady=8)
-        self.nuevo_password=Entry(marco,width=25,show="*")
-        self.nuevo_password.grid(row=4, column=1, padx=5, pady=8)
+        label_precio=Label(marco,text="Precio: ",font=("Comic Sans", 10,"bold")).grid(row=1,column=2,sticky='s',padx=5,pady=8)
+        self.nuevo_precio=Entry(marco,width=25)
+        self.nuevo_precio.grid(row=1, column=3, padx=5, pady=8)
 
-        label_password=Label(marco,text="Repetir contraseña: ",font=("Comic Sans", 10,"bold")).grid(row=5,column=0,sticky='s',padx=10,pady=8)
-        self.repetir_password=Entry(marco,width=25,show="*")
-        self.repetir_password.grid(row=5, column=1, padx=5, pady=8)
+        label_descripcion=Label(marco,text="Descripcion: ",font=("Comic Sans", 10,"bold")).grid(row=2,column=2,sticky='s',padx=10,pady=8)
+        self.repetir_descripcion=Text(marco,width=25,height=2)
+        self.repetir_descripcion.grid(row=2, column=3,rowspan=10, padx=10, pady=8)
 
         "--------------- Frame botones --------------------"
-        frame_botones=Frame(ventana_recuperar)
+        frame_botones=Frame(ventana_producto)
         frame_botones.pack()
 
         "--------------- Botones --------------------"
-        boton_recuperar=Button(frame_botones,text="REGISTRAR",command=self.Restablecer_contraseña ,height=2,width=10,bg="green",fg="white",font=("Comic Sans", 10,"bold")).grid(row=0, column=1, padx=10, pady=10)
-        boton_cancelar=Button(frame_botones,text="LIMPIAR",command=self.LLamar_login ,height=2,width=10,bg="red",fg="white",font=("Comic Sans", 10,"bold")).grid(row=0, column=3, padx=10, pady=10)
+        #iconos
+        
+        icono_boton_agregar = PhotoImage(file="D:/EIGHTA/PYTHON-TKINTER/SISTEMA DESKTOP/Imagenes/agregar.png")
+        
+        
+        boton_registrar=Button(frame_botones,text="REGISTRAR",command=self.Restablecer_contraseña,height=2,width=10,bg="green",fg="white",font=("Comic Sans", 10,"bold")).grid(row=0, column=1, padx=10, pady=10)
+        boton_editar=Button(frame_botones,text="EDITAR",command=self.Restablecer_contraseña ,height=2,width=10,bg="gray",fg="white",font=("Comic Sans", 10,"bold")).grid(row=0, column=2, padx=10, pady=10)
+        boton_eliminar=Button(frame_botones,text="ELIMINAR",command=ventana_producto.quit,height=2,width=10,bg="red",fg="white",font=("Comic Sans", 10,"bold")).grid(row=0, column=3, padx=10, pady=10)
         
     def Ejecutar_consulta(self, query, parameters=()):
         with sqlite3.connect(self.db_name) as conexion:
@@ -144,13 +154,8 @@ class Producto:
             messagebox.showinfo("CONTRASEÑA RECUPERADA", f'Contraseña actualizada correctamente: {self.nuevo_password.get()}')
             print('DATOS ACTUALIZADO')
             self.Limpiar_formulario()
-     
-    def LLamar_login(self):
-        ventana_recuperar.destroy()    
-        call([sys.executable, 'D:/EIGHTA/PYTHON-TKINTER/SISTEMA DESKTOP/2-Login.py', 'htmlfilename.htm'])
-
-            
+      
 if __name__ == '__main__':
-    ventana_recuperar=Tk()
-    application=Producto(ventana_recuperar)
-    ventana_recuperar.mainloop()
+    ventana_producto=Tk()
+    application=Producto(ventana_producto)
+    ventana_producto.mainloop()
