@@ -19,12 +19,12 @@ class Producto:
     def __init__(self, ventana_producto):
         self.window=ventana_producto   
         self.window.title("APLICACION")
-        self.window.geometry("800x690")
+        self.window.geometry("800x720")
         self.window.resizable(0,0)
         self.window.config(bd=10)
         
         "--------------- Titulo --------------------"
-        titulo= Label(ventana_producto, text="REGISTRO DE PRODCUTOS ELECTRONICOS",fg="black",font=("Comic Sans", 17,"bold"),pady=10).pack()
+        titulo= Label(ventana_producto, text="REGISTRO DE PRODUCTOS ELECTRONICOS",fg="black",font=("Comic Sans", 17,"bold"),pady=10).pack()
 
         "--------------- Logos productos --------------------"
         frame_logo_productos = LabelFrame(ventana_producto)
@@ -72,7 +72,7 @@ class Producto:
         self.nombre.grid(row=1, column=1, padx=5, pady=8)
         
         label_categoria=Label(marco,text="Categoria: ",font=("Comic Sans", 10,"bold")).grid(row=2,column=0,sticky='s',padx=5,pady=9)
-        self.combo_categoria=ttk.Combobox(marco,values=["Microcontrolador","Microoedenador","Sensores","Accesorios"], width=22,state="readonly")
+        self.combo_categoria=ttk.Combobox(marco,values=["Microcontrolador","Microordenador","Sensores","Accesorios"], width=22,state="readonly")
         self.combo_categoria.current(0)
         self.combo_categoria.grid(row=2,column=1,padx=5,pady=0)
 
@@ -82,20 +82,20 @@ class Producto:
         self.cantidad.grid(row=0, column=3, padx=5, pady=8)
 
         label_precio=Label(marco,text="Precio (S/.): ",font=("Comic Sans", 10,"bold")).grid(row=1,column=2,sticky='s',padx=5,pady=8)
-        self.nuevo_precio=Entry(marco,width=25)
-        self.nuevo_precio.grid(row=1, column=3, padx=5, pady=8)
+        self.precio=Entry(marco,width=25)
+        self.precio.grid(row=1, column=3, padx=5, pady=8)
 
         label_descripcion=Label(marco,text="Descripcion: ",font=("Comic Sans", 10,"bold")).grid(row=2,column=2,sticky='s',padx=10,pady=8)
-        self.repetir_descripcion=Text(marco,width=25,height=2)
-        self.repetir_descripcion.grid(row=2, column=3,rowspan=10, padx=10, pady=8)
+        self.descripcion=Text(marco,width=25,height=2)
+        self.descripcion.grid(row=2, column=3,rowspan=10, padx=10, pady=8)
 
         "--------------- Frame botones --------------------"
         frame_botones=Frame(ventana_producto)
         frame_botones.pack()
 
         "--------------- Botones --------------------"
-        boton_registrar=Button(frame_botones,text="REGISTRAR",command=self.Restablecer_contraseña,height=2,width=10,bg="green",fg="white",font=("Comic Sans", 10,"bold")).grid(row=0, column=1, padx=10, pady=15)
-        boton_editar=Button(frame_botones,text="EDITAR",command=self.Restablecer_contraseña ,height=2,width=10,bg="gray",fg="white",font=("Comic Sans", 10,"bold")).grid(row=0, column=2, padx=10, pady=15)
+        boton_registrar=Button(frame_botones,text="REGISTRAR",command=self.Agregar_producto,height=2,width=10,bg="green",fg="white",font=("Comic Sans", 10,"bold")).grid(row=0, column=1, padx=10, pady=15)
+        boton_editar=Button(frame_botones,text="EDITAR",command=ventana_producto.quit ,height=2,width=10,bg="gray",fg="white",font=("Comic Sans", 10,"bold")).grid(row=0, column=2, padx=10, pady=15)
         boton_eliminar=Button(frame_botones,text="ELIMINAR",command=ventana_producto.quit,height=2,width=10,bg="red",fg="white",font=("Comic Sans", 10,"bold")).grid(row=0, column=3, padx=10, pady=15)
 
         "--------------- Tabla --------------------"    
@@ -118,25 +118,50 @@ class Producto:
         self.tree.heading("columna5",text='Descripcion', anchor=CENTER)
         
         self.tree.pack()
-           
+        
+        "--------------- Boton actualizar --------------------"   
+        Button(ventana_producto,text="ACTUALIZAR LISTA",command=self.Obtener_producto ,height=2,width=20,bg="black",fg="white",font=("Comic Sans", 10,"bold")).pack(side=BOTTOM)
+    
+    "--------------- CRUD --------------------"               
+    def Obtener_producto(self):
+        records=self.tree.get_children()
+        for element in records:
+            self.tree.delete(element)
+        query='SELECT * FROM Productos ORDER BY Nombre desc'
+        db_rows=self.Ejecutar_consulta(query)
+        for row in db_rows:
+            self.tree.insert("",0, text=row[1],values=(row[2],row[3],row[4],row[5],row[6]))
+            
+    def Agregar_producto(self):
+        if self.Validar_formulario_completo():
+            query='INSERT INTO Productos VALUES(NULL, ?, ?, ?, ?, ?, ?)'
+            parameters = (self.codigo.get(),self.nombre.get(),self.combo_categoria.get(),self.cantidad.get(),self.precio.get(),self.descripcion.get())
+            self.Ejecutar_consulta(query, parameters)
+            messagebox.showinfo("REGISTRO EXITOSO", f'Producto registrado: {self.nombre.get()}')
+            print('REGISTRADO')
+            self.Limpiar_formulario()
+            self.Obtener_producto()
+            
+    "--------------- OTRAS FUNCIONES --------------------"
     def Ejecutar_consulta(self, query, parameters=()):
         with sqlite3.connect(self.db_name) as conexion:
             cursor=conexion.cursor()
             result=cursor.execute(query,parameters)
             conexion.commit()
-        return result 
-    
-    def Limpiar_formulario(self):
-        self.dni.delete(0, END)
-        self.respuesta.delete(0, END)
-        self.nuevo_password.delete(0, END)
-        self.repetir_password.delete(0, END)     
-        
+        return result   
+               
     def Validar_formulario_completo(self):
-        if len(self.dni.get()) !=0 and len(self.nuevo_password.get()) !=0 and len(self.repetir_password.get()) !=0 and len(self.respuesta.get()) !=0:
+        if len(self.codigo.get()) !=0 and len(self.nombre.get()) !=0 and len(self.combo_categoria.get()) !=0 and len(self.cantidad.get()) !=0 and len(self.precio.get()) !=0 and len(self.descripcion.get()) !=0:
             return True
         else:
-             messagebox.showerror("ERROR", "Complete todos los campos del formulario")
+             messagebox.showerror("ERROR", "Complete todos los campos del formulario") 
+    
+    def Limpiar_formulario(self):
+        self.codigo.delete(0, END)
+        self.nombre.delete(0, END)
+        self.cantidad.delete(0, END)
+        self.precio.delete(0, END)
+        self.descripcion.delete(0, END)       
              
     def Validar_contraseña(self):
         if(str(self.nuevo_password.get()) == str(self.repetir_password.get())):
