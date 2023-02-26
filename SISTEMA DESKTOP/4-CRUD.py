@@ -19,7 +19,7 @@ class Producto:
     def __init__(self, ventana_producto):
         self.window=ventana_producto   
         self.window.title("APLICACION")
-        self.window.geometry("800x720")
+        self.window.geometry("800x680")
         self.window.resizable(0,0)
         self.window.config(bd=10)
         
@@ -38,7 +38,6 @@ class Producto:
         label_imagen= Label(frame_logo_productos, image= render)
         label_imagen.image=render
         label_imagen.grid(row=0, column=0,padx=15,pady=5)
-
 
         #Logo nodemcu
         imagen_nodemcu=Image.open("D:/EIGHTA/PYTHON-TKINTER/SISTEMA DESKTOP/Imagenes/nodemcu-logo.png")
@@ -86,8 +85,8 @@ class Producto:
         self.precio.grid(row=1, column=3, padx=5, pady=8)
 
         label_descripcion=Label(marco,text="Descripcion: ",font=("Comic Sans", 10,"bold")).grid(row=2,column=2,sticky='s',padx=10,pady=8)
-        self.descripcion=Text(marco,width=25,height=2)
-        self.descripcion.grid(row=2, column=3,rowspan=10, padx=10, pady=8)
+        self.descripcion=Entry(marco,width=25)
+        self.descripcion.grid(row=2, column=3, padx=10, pady=8)
 
         "--------------- Frame botones --------------------"
         frame_botones=Frame(ventana_producto)
@@ -95,8 +94,8 @@ class Producto:
 
         "--------------- Botones --------------------"
         boton_registrar=Button(frame_botones,text="REGISTRAR",command=self.Agregar_producto,height=2,width=10,bg="green",fg="white",font=("Comic Sans", 10,"bold")).grid(row=0, column=1, padx=10, pady=15)
-        boton_editar=Button(frame_botones,text="EDITAR",command=ventana_producto.quit ,height=2,width=10,bg="gray",fg="white",font=("Comic Sans", 10,"bold")).grid(row=0, column=2, padx=10, pady=15)
-        boton_eliminar=Button(frame_botones,text="ELIMINAR",command=ventana_producto.quit,height=2,width=10,bg="red",fg="white",font=("Comic Sans", 10,"bold")).grid(row=0, column=3, padx=10, pady=15)
+        boton_editar=Button(frame_botones,text="EDITAR",command=self.Editar_producto ,height=2,width=10,bg="gray",fg="white",font=("Comic Sans", 10,"bold")).grid(row=0, column=2, padx=10, pady=15)
+        boton_eliminar=Button(frame_botones,text="ELIMINAR",command=self.Eliminar_producto,height=2,width=10,bg="red",fg="white",font=("Comic Sans", 10,"bold")).grid(row=0, column=3, padx=10, pady=15)
 
         "--------------- Tabla --------------------"    
         self.tree=ttk.Treeview(height=13, columns=("columna1","columna2","columna3","columna4","columna5"))
@@ -119,11 +118,10 @@ class Producto:
         
         self.tree.pack()
         
-        "--------------- Boton actualizar --------------------"   
-        Button(ventana_producto,text="ACTUALIZAR LISTA",command=self.Obtener_producto ,height=2,width=20,bg="black",fg="white",font=("Comic Sans", 10,"bold")).pack(side=BOTTOM)
-    
+        self.Obtener_productos()
+
     "--------------- CRUD --------------------"               
-    def Obtener_producto(self):
+    def Obtener_productos(self):
         records=self.tree.get_children()
         for element in records:
             self.tree.delete(element)
@@ -139,9 +137,74 @@ class Producto:
             self.Ejecutar_consulta(query, parameters)
             messagebox.showinfo("REGISTRO EXITOSO", f'Producto registrado: {self.nombre.get()}')
             print('REGISTRADO')
-            self.Limpiar_formulario()
-            self.Obtener_producto()
-            
+        self.Limpiar_formulario()
+        self.Obtener_productos()
+    
+    def Eliminar_producto(self):
+        try:
+            self.tree.item(self.tree.selection())['text'][0]
+        except IndexError as e:
+            messagebox.showerror("ERROR","Porfavor selecciona un elemento") 
+            return
+        dato=self.tree.item(self.tree.selection())['text']
+        nombre=self.tree.item(self.tree.selection())['values'][0]
+        query="DELETE FROM Productos WHERE Codigo = ?"
+        respuesta=messagebox.askquestion("ADVERTENCIA","¿SEGURO QUE DESEA ELIMINAR EL PRODUCTO?")
+        if respuesta == 'yes':
+            self.Ejecutar_consulta(query,(dato,))
+            self.Obtener_productos()
+        else:
+            return
+     
+    def Editar_producto(self):
+        try:
+            self.tree.item(self.tree.selection())['text'][0]
+        except IndexError as e:
+            messagebox.showerror("ERROR","Porfavor selecciona un elemento") 
+            return
+        codigo=self.tree.item(self.tree.selection())['text']
+        nombre=self.tree.item(self.tree.selection())['values'][0]
+        categoria=self.tree.item(self.tree.selection())['values'][1]
+        cantidad=self.tree.item(self.tree.selection())['values'][2]
+        precio=self.tree.item(self.tree.selection())['values'][3]
+        descripcion=self.tree.item(self.tree.selection())['values'][4]
+        
+        self.Ventana_editar = Toplevel()
+        self.Ventana_editar.title('EDITAR PRODUCTO')
+        self.Ventana_editar.resizable(0,0)
+        
+        #Valores ventana
+        label_codigo=Label(self.Ventana_editar,text="Codigo del producto: ",font=("Comic Sans", 10,"bold")).grid(row=0,column=0,sticky='s',padx=5,pady=8)
+        nuevo_codigo=Entry(self.Ventana_editar,textvariable=StringVar(self.Ventana_editar,value=codigo),width=25).grid(row=0, column=1, padx=5, pady=8)
+
+        
+        label_nombre=Label(self.Ventana_editar,text="Nombre del producto: ",font=("Comic Sans", 10,"bold")).grid(row=1,column=0,sticky='s',padx=5,pady=8)
+        nuevo_nombre=Entry(self.Ventana_editar,textvariable=StringVar(self.Ventana_editar,value=nombre),width=25,).grid(row=1, column=1, padx=5, pady=8)
+        
+        label_categoria=Label(self.Ventana_editar,text="Categoria: ",font=("Comic Sans", 10,"bold")).grid(row=2,column=0,sticky='s',padx=5,pady=9)
+        nuevo_combo_categoria=ttk.Combobox(self.Ventana_editar,values=["Microcontrolador","Microordenador","Sensores","Accesorios"], width=22,state="readonly")
+        nuevo_combo_categoria.set(categoria)
+        nuevo_combo_categoria.grid(row=2,column=1,padx=5,pady=0)
+
+        label_cantidad=Label(self.Ventana_editar,text="Cantidad: ",font=("Comic Sans", 10,"bold")).grid(row=0,column=2,sticky='s',padx=5,pady=8)
+        nueva_cantidad=Entry(self.Ventana_editar,textvariable=StringVar(self.Ventana_editar,value=cantidad),width=25).grid(row=0, column=3, padx=5, pady=8)
+
+        label_precio=Label(self.Ventana_editar,text="Precio (S/.): ",font=("Comic Sans", 10,"bold")).grid(row=1,column=2,sticky='s',padx=5,pady=8)
+        nuevo_precio=Entry(self.Ventana_editar,textvariable=StringVar(self.Ventana_editar,value=precio),width=25).grid(row=1, column=3, padx=5, pady=8)
+
+        label_descripcion=Label(self.Ventana_editar,text="Descripcion: ",font=("Comic Sans", 10,"bold")).grid(row=2,column=2,sticky='s',padx=10,pady=8)
+        nueva_descripcion=Entry(self.Ventana_editar,textvariable=StringVar(self.Ventana_editar,value=descripcion),width=25).grid(row=2, column=3, padx=10, pady=8)
+
+        boton_actualizar=Button(self.Ventana_editar,text="ACTUALIZAR",command= lambda: self.Actualizar(nuevo_codigo.get(),nuevo_nombre.get(),nuevo_combo_categoria.get(),nueva_cantidad.get(),nuevo_precio.get(),nueva_descripcion.get(),codigo.get(),nombre.get()),height=2,width=20,bg="black",fg="white",font=("Comic Sans", 10,"bold")).grid(row=3, column=1,columnspan=2, padx=10, pady=15)
+
+    def Actualizar(self,nuevo_codigo,nuevo_nombre,nuevo_combo_categoria,nueva_cantidad,nuevo_precio,nueva_descripcion,codigo,nombre):
+        query='UPDATE Productos SET Codigo = ?, Nombre = ?, Categoria = ?, Cantidad =?, Precio=?, Descripcion =? WHERE Codigo = ? AND Nombre =?'
+        parameters=(nuevo_codigo,nuevo_nombre,nuevo_combo_categoria,nueva_cantidad,nuevo_precio,nueva_descripcion,codigo,nombre)
+        self.Ejecutar_consulta(query,parameters)
+        messagebox.showinfo('EXITO',f'Producto actualizado:{nuevo_nombre}')
+        self.Ventana_editar.destroy()
+        self.Obtener_productos() 
+    
     "--------------- OTRAS FUNCIONES --------------------"
     def Ejecutar_consulta(self, query, parameters=()):
         with sqlite3.connect(self.db_name) as conexion:
@@ -149,7 +212,7 @@ class Producto:
             result=cursor.execute(query,parameters)
             conexion.commit()
         return result   
-               
+          
     def Validar_formulario_completo(self):
         if len(self.codigo.get()) !=0 and len(self.nombre.get()) !=0 and len(self.combo_categoria.get()) !=0 and len(self.cantidad.get()) !=0 and len(self.precio.get()) !=0 and len(self.descripcion.get()) !=0:
             return True
@@ -163,39 +226,7 @@ class Producto:
         self.precio.delete(0, END)
         self.descripcion.delete(0, END)       
              
-    def Validar_contraseña(self):
-        if(str(self.nuevo_password.get()) == str(self.repetir_password.get())):
-            return True
-        else:
-            messagebox.showerror("ERROR DE RECUPERACION", "Contraseñas no coinciden")
- 
-    def Buscar_usuario(self, dni, respuesta):
-        with sqlite3.connect(self.db_name) as conexion:
-            cursor=conexion.cursor()
-            sql=f"SELECT * FROM Usuarios WHERE DNI = {dni} AND Respuesta = '{respuesta}'"
-            cursor.execute(sql)
-            busqueda= cursor.fetchall() # obtener respuesta como lista
-            cursor.close()
-            return busqueda
-
-    def Validar_datos_usuario(self):
-        dni= self.dni.get()
-        respuesta=self.respuesta.get()
-        busqueda = self.Buscar_usuario(dni, respuesta)
-        if (busqueda != []):
-            return True
-        else:
-            messagebox.showerror("ERROR DE RECUPERACION", "Datos de recuperacion no son correctos")
-
-    def Restablecer_contraseña(self):
-        if self.Validar_formulario_completo() and self.Validar_datos_usuario() and self.Validar_contraseña():
-            query='UPDATE Usuarios SET Contraseña = (?) WHERE DNI= (?)'
-            parameters = (self.nuevo_password.get(), self.dni.get())
-            self.Ejecutar_consulta(query, parameters)
-            messagebox.showinfo("CONTRASEÑA RECUPERADA", f'Contraseña actualizada correctamente: {self.nuevo_password.get()}')
-            print('DATOS ACTUALIZADO')
-            self.Limpiar_formulario()
-      
+    
 if __name__ == '__main__':
     ventana_producto=Tk()
     application=Producto(ventana_producto)
