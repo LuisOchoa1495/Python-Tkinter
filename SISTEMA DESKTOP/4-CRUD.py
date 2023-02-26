@@ -9,8 +9,7 @@ from tkinter import ttk
 from tkinter import messagebox 
 #Python image Library
 from PIL import ImageTk, Image
-from subprocess import call
-import sys
+
 import sqlite3
 
 class Producto:
@@ -19,7 +18,7 @@ class Producto:
     def __init__(self, ventana_producto):
         self.window=ventana_producto   
         self.window.title("APLICACION")
-        self.window.geometry("800x680")
+        self.window.geometry("800x670")
         self.window.resizable(0,0)
         self.window.config(bd=10)
         
@@ -149,12 +148,13 @@ class Producto:
         dato=self.tree.item(self.tree.selection())['text']
         nombre=self.tree.item(self.tree.selection())['values'][0]
         query="DELETE FROM Productos WHERE Codigo = ?"
-        respuesta=messagebox.askquestion("ADVERTENCIA","¿SEGURO QUE DESEA ELIMINAR EL PRODUCTO?")
+        respuesta=messagebox.askquestion("ADVERTENCIA",f"¿Seguro que desea eliminar el producto: {nombre}?")
         if respuesta == 'yes':
             self.Ejecutar_consulta(query,(dato,))
             self.Obtener_productos()
+            messagebox.showinfo('EXITO',f'Producto eliminado: {nombre}')
         else:
-            return
+            messagebox.showerror('ERROR',f'Error al eliminar el producto: {nombre}')
      
     def Editar_producto(self):
         try:
@@ -173,30 +173,38 @@ class Producto:
         self.Ventana_editar.title('EDITAR PRODUCTO')
         self.Ventana_editar.resizable(0,0)
         
-        #Valores ventana
+        
+        #Valores ventana editar
         label_codigo=Label(self.Ventana_editar,text="Codigo del producto: ",font=("Comic Sans", 10,"bold")).grid(row=0,column=0,sticky='s',padx=5,pady=8)
-        nuevo_codigo=Entry(self.Ventana_editar,textvariable=StringVar(self.Ventana_editar,value=codigo),width=25).grid(row=0, column=1, padx=5, pady=8)
-
+        nuevo_codigo=Entry(self.Ventana_editar,textvariable=StringVar(self.Ventana_editar,value=codigo),width=25)
+        nuevo_codigo.grid(row=0, column=1, padx=5, pady=8)
         
         label_nombre=Label(self.Ventana_editar,text="Nombre del producto: ",font=("Comic Sans", 10,"bold")).grid(row=1,column=0,sticky='s',padx=5,pady=8)
-        nuevo_nombre=Entry(self.Ventana_editar,textvariable=StringVar(self.Ventana_editar,value=nombre),width=25,).grid(row=1, column=1, padx=5, pady=8)
-        
+        nuevo_nombre=Entry(self.Ventana_editar,textvariable=StringVar(self.Ventana_editar,value=nombre),width=25)
+        nuevo_nombre.grid(row=1, column=1, padx=5, pady=8)
+    
         label_categoria=Label(self.Ventana_editar,text="Categoria: ",font=("Comic Sans", 10,"bold")).grid(row=2,column=0,sticky='s',padx=5,pady=9)
         nuevo_combo_categoria=ttk.Combobox(self.Ventana_editar,values=["Microcontrolador","Microordenador","Sensores","Accesorios"], width=22,state="readonly")
         nuevo_combo_categoria.set(categoria)
         nuevo_combo_categoria.grid(row=2,column=1,padx=5,pady=0)
 
         label_cantidad=Label(self.Ventana_editar,text="Cantidad: ",font=("Comic Sans", 10,"bold")).grid(row=0,column=2,sticky='s',padx=5,pady=8)
-        nueva_cantidad=Entry(self.Ventana_editar,textvariable=StringVar(self.Ventana_editar,value=cantidad),width=25).grid(row=0, column=3, padx=5, pady=8)
+        nueva_cantidad=Entry(self.Ventana_editar,textvariable=StringVar(self.Ventana_editar,value=cantidad),width=25)
+        nueva_cantidad.grid(row=0, column=3, padx=5, pady=8)
 
         label_precio=Label(self.Ventana_editar,text="Precio (S/.): ",font=("Comic Sans", 10,"bold")).grid(row=1,column=2,sticky='s',padx=5,pady=8)
-        nuevo_precio=Entry(self.Ventana_editar,textvariable=StringVar(self.Ventana_editar,value=precio),width=25).grid(row=1, column=3, padx=5, pady=8)
-
+        nuevo_precio=Entry(self.Ventana_editar,textvariable=StringVar(self.Ventana_editar,value=precio),width=25)
+        nuevo_precio.grid(row=1, column=3, padx=5, pady=8)
+        
         label_descripcion=Label(self.Ventana_editar,text="Descripcion: ",font=("Comic Sans", 10,"bold")).grid(row=2,column=2,sticky='s',padx=10,pady=8)
-        nueva_descripcion=Entry(self.Ventana_editar,textvariable=StringVar(self.Ventana_editar,value=descripcion),width=25).grid(row=2, column=3, padx=10, pady=8)
+        nueva_descripcion=Entry(self.Ventana_editar,textvariable=StringVar(self.Ventana_editar,value=descripcion),width=25)
+        nueva_descripcion.grid(row=2, column=3, padx=10, pady=8)
 
-        boton_actualizar=Button(self.Ventana_editar,text="ACTUALIZAR",command= lambda: self.Actualizar(nuevo_codigo.get(),nuevo_nombre.get(),nuevo_combo_categoria.get(),nueva_cantidad.get(),nuevo_precio.get(),nueva_descripcion.get(),codigo.get(),nombre.get()),height=2,width=20,bg="black",fg="white",font=("Comic Sans", 10,"bold")).grid(row=3, column=1,columnspan=2, padx=10, pady=15)
-
+        boton_actualizar=Button(self.Ventana_editar,text="ACTUALIZAR",command= lambda: self.Actualizar(nuevo_codigo.get(),nuevo_nombre.get(),nuevo_combo_categoria.get(),nueva_cantidad.get(),nuevo_precio.get(),nueva_descripcion.get(),codigo,nombre),height=2,width=20,bg="black",fg="white",font=("Comic Sans", 10,"bold"))
+        boton_actualizar.grid(row=3, column=1,columnspan=2, padx=10, pady=15)
+        
+        self.Ventana_editar.mainloop()      
+        
     def Actualizar(self,nuevo_codigo,nuevo_nombre,nuevo_combo_categoria,nueva_cantidad,nuevo_precio,nueva_descripcion,codigo,nombre):
         query='UPDATE Productos SET Codigo = ?, Nombre = ?, Categoria = ?, Cantidad =?, Precio=?, Descripcion =? WHERE Codigo = ? AND Nombre =?'
         parameters=(nuevo_codigo,nuevo_nombre,nuevo_combo_categoria,nueva_cantidad,nuevo_precio,nueva_descripcion,codigo,nombre)
@@ -225,8 +233,7 @@ class Producto:
         self.cantidad.delete(0, END)
         self.precio.delete(0, END)
         self.descripcion.delete(0, END)       
-             
-    
+               
 if __name__ == '__main__':
     ventana_producto=Tk()
     application=Producto(ventana_producto)
