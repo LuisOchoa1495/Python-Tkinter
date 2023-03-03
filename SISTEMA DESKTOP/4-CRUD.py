@@ -9,7 +9,6 @@ from tkinter import ttk
 from tkinter import messagebox 
 #Python image Library
 from PIL import ImageTk, Image
-
 import sqlite3
 
 class Producto:
