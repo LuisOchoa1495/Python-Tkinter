@@ -10,25 +10,26 @@ from tkinter import messagebox
 from PIL import ImageTk, Image
 import sqlite3
 
-class Producto:
+
+class Producto():
     db_name='database_proyecto.db'
-    
     def __init__(self, ventana_producto):
-        self.window=ventana_producto
-        menubar=Menu(self.window)   
-        self.window.title("APLICACION")
-        self.window.geometry("800x670")
-        self.window.resizable(0,0)
-        self.window.config(bd=10,menu=menubar)
+        menubar=Menu(ventana_producto)   
+        ventana_producto.title("APLICACION")
+        ventana_producto.geometry("800x670")
+        ventana_producto.resizable(0,0)
+        ventana_producto.config(bd=10,menu=menubar)
+
         "---------------------Menu---------------------------"
-        producto_menu=Menu(self.window,tearoff=0)
-        producto_menu.add_command(label="Registrar")
-        producto_menu.add_command(label="Buscar")
-        menubar.add_cascade(label="Producto",menu=producto_menu)
-        
+        menu=Menu(ventana_producto,tearoff=0)
+        menubar.add_command(label="Registrar",command=self.widgets_crud)
+        menubar.add_command(label="Buscar",command=self.widgets_buscador)
+        menubar.add_command(label="Salir",command=ventana_producto.quit)
+        self.widgets_crud()
+
+    def widgets_crud(self):
         "--------------- Titulo --------------------"
         titulo= Label(ventana_producto, text="REGISTRO DE PRODUCTOS ELECTRONICOS",fg="black",font=("Comic Sans", 17,"bold"),pady=10).pack()
-
         "--------------- Logos productos --------------------"
         frame_logo_productos = LabelFrame(ventana_producto)
         frame_logo_productos.config(bd=0)
@@ -123,6 +124,85 @@ class Producto:
         
         self.Obtener_productos()
 
+    def widgets_buscador(self):
+        "--------------- Titulo --------------------"
+        titulo_buscador= Label(ventana_producto, text="BUSCADOR DE PRODUCTOS ELECTRONICOS",fg="black",font=("Comic Sans", 17,"bold"),pady=10).pack()
+
+        "--------------- Logos productos --------------------"
+        frame_logo_productos = LabelFrame(ventana_producto)
+        frame_logo_productos.config(bd=0)
+        frame_logo_productos.pack()
+
+        #Logo arduino
+        imagen_arduino=Image.open("D:/EIGHTA/PYTHON-TKINTER/SISTEMA DESKTOP/Imagenes/arduino-logo.png")
+        nueva_imagen=imagen_arduino.resize((60,60))
+        render=ImageTk.PhotoImage(nueva_imagen)
+        label_imagen= Label(frame_logo_productos, image= render)
+        label_imagen.image=render
+        label_imagen.grid(row=0, column=0,padx=15,pady=5)
+
+        #Logo nodemcu
+        imagen_nodemcu=Image.open("D:/EIGHTA/PYTHON-TKINTER/SISTEMA DESKTOP/Imagenes/nodemcu-logo.png")
+        nueva_imagen=imagen_nodemcu.resize((60,60))
+        render=ImageTk.PhotoImage(nueva_imagen)
+        label_imagen= Label(frame_logo_productos, image= render)
+        label_imagen.image=render
+        label_imagen.grid(row=0, column=1,padx=15,pady=5)
+        
+        #Logo raspberry
+        imagen_raspberry=Image.open("D:/EIGHTA/PYTHON-TKINTER/SISTEMA DESKTOP/Imagenes/raspberry-logo.png")
+        nueva_imagen=imagen_raspberry.resize((60,60))
+        render=ImageTk.PhotoImage(nueva_imagen)
+        label_imagen= Label(frame_logo_productos, image= render)
+        label_imagen.image=render
+        label_imagen.grid(row=0, column=2,padx=15,pady=5)
+
+        "--------------- Frame marco --------------------"
+        marco_buscar_producto = LabelFrame(ventana_producto, text="Buscar producto",font=("Comic Sans", 10,"bold"),pady=10)
+        marco_buscar_producto.config(bd=2)
+        marco_buscar_producto.pack()
+
+        "--------------- Formulario Buscar--------------------"
+        label_buscar=Label(marco_buscar_producto,text="Buscar Por: ",font=("Comic Sans", 10,"bold")).grid(row=0,column=0,sticky='s',padx=5,pady=5)
+        self.combo_buscar=ttk.Combobox(marco_buscar_producto,values=["Codigo","Nombre"], width=22,state="readonly")
+        self.combo_buscar.current(0)
+        self.combo_buscar.grid(row=0,column=1,padx=5,pady=5)
+
+        label_codigo_codigo=Label(marco_buscar_producto,text="Codigo / Nombre del producto: ",font=("Comic Sans", 10,"bold")).grid(row=0,column=2,sticky='s',padx=5,pady=5)
+        self.codigo_nombre=Entry(marco_buscar_producto,width=25)
+        self.codigo_nombre.focus()
+        self.codigo_nombre.grid(row=0, column=3, padx=10, pady=5)
+
+        boton_buscar=Button(ventana_producto,text="BUSCAR",command=ventana_producto.destroy,height=2,width=20,bg="black",fg="white",font=("Comic Sans", 10,"bold"))
+        boton_buscar.pack(pady=15)
+
+        "--------------- Tabla --------------------"    
+        self.tree=ttk.Treeview(height=13, columns=("columna1","columna2","columna3","columna4","columna5"))
+        
+        self.tree.heading("#0",text='Codigo', anchor=CENTER)
+        self.tree.column("#0", width=90, minwidth=75, stretch=NO)
+        
+        self.tree.heading("columna1",text='Nombre', anchor=CENTER)
+        self.tree.column("columna1", width=150, minwidth=75, stretch=NO)
+        
+        self.tree.heading("columna2",text='Categoria', anchor=CENTER)
+        self.tree.column("columna2", width=150, minwidth=75, stretch=NO)
+                
+        self.tree.heading("columna3",text='Cantidad', anchor=CENTER)
+        self.tree.column("columna3", width=70, minwidth=60, stretch=NO)
+        
+        self.tree.heading("columna4",text='Precio', anchor=CENTER)
+        self.tree.column("columna4", width=70, minwidth=60, stretch=NO)
+        
+        self.tree.heading("columna5",text='Descripcion', anchor=CENTER)
+        
+        self.tree.pack(pady=10)
+        
+        #Remover otros labels
+        
+
+        self.Obtener_productos()
+
     "--------------- CRUD --------------------"               
     def Obtener_productos(self):
         records=self.tree.get_children()
@@ -215,8 +295,11 @@ class Producto:
         self.Ejecutar_consulta(query,parameters)
         messagebox.showinfo('EXITO',f'Producto actualizado:{nuevo_nombre}')
         self.Ventana_editar.destroy()
-        self.Obtener_productos() 
-    
+        self.Obtener_productos()
+
+    def Buscar_productos(self):
+        self.widgets_buscador()
+        
     "--------------- OTRAS FUNCIONES --------------------"
     def Ejecutar_consulta(self, query, parameters=()):
         with sqlite3.connect(self.db_name) as conexion:
@@ -236,9 +319,17 @@ class Producto:
         self.nombre.delete(0, END)
         self.cantidad.delete(0, END)
         self.precio.delete(0, END)
-        self.descripcion.delete(0, END)       
+        self.descripcion.delete(0, END)
+
+    def clear_menu(self): 
+        for widget in ventana_producto.winfo_children():
+            widget.destroy()
+        ventana_producto.pack_forget()
                
 if __name__ == '__main__':
     ventana_producto=Tk()
+    label_crud=Label(ventana_producto)
     application=Producto(ventana_producto)
     ventana_producto.mainloop()
+
+
