@@ -41,13 +41,13 @@ class Login:
 
         "--------------- Formulario --------------------"
         label_dni=Label(marco,text="DNI: ",font=("Comic Sans", 10,"bold")).grid(row=0,column=0,sticky='s',padx=5,pady=10)
-        self.dni=Entry(marco,width=25)
-        self.dni.focus()
-        self.dni.grid(row=0, column=1, padx=5, pady=10)
+        self.dni_login=Entry(marco,width=25)
+        self.dni_login.focus()
+        self.dni_login.grid(row=0, column=1, padx=5, pady=10)
 
         label_nombres=Label(marco,text="Contraseña: ",font=("Comic Sans", 10,"bold")).grid(row=1,column=0,sticky='s',padx=10,pady=10)
-        self.password=Entry(marco,width=25,show="*")
-        self.password.grid(row=1, column=1, padx=10, pady=10)
+        self.password_login=Entry(marco,width=25,show="*")
+        self.password_login.grid(row=1, column=1, padx=10, pady=10)
         
         "--------------- Frame botones --------------------"
         frame_botones=Frame(ventana_login)
@@ -69,25 +69,29 @@ class Login:
             return validacion
         
     def Validar_formulario_completo(self):
-        if len(self.dni.get()) !=0 and len(self.password.get()) !=0:
+        if len(self.dni_login.get()) !=0 and len(self.password_login.get()) !=0:
             return True
         else:
              messagebox.showerror("ERROR DE INGRESO", "Ingrese su DNI y contraseña!!!")
         self.Limpiar_login()    
     
     def Limpiar_login(self):
-            self.dni.delete(0, END)
-            self.password.delete(0, END)
+            self.dni_login.delete(0, END)
+            self.password_login.delete(0, END)
 
     def Login(self):
-        if(self.Validar_formulario_completo()):
-            dni= self.dni.get()
-            password= self.password.get()
-            dato = self.Validar_login(dni, password)
-            if (dato != []):
-                messagebox.showinfo("BIENVENIDO", "Datos ingresados correctamente")  
-            else:
-                messagebox.showerror("ERROR DE INGRESO", "DNI o contraseña incorrecto") 
+        try:
+            if(self.Validar_formulario_completo()):
+                dni= self.dni_login.get()
+                password= self.password_login.get()
+                dato = self.Validar_login(dni, password)
+                if (dato != []):
+                    messagebox.showinfo("BIENVENIDO", "Datos ingresados correctamente")  
+                else:
+                    messagebox.showerror("ERROR DE INGRESO", "DNI o contraseña incorrecto") 
+                self.Limpiar_login()
+        except:
+            messagebox.showerror("ERROR", "Ha ocurrido un error, reinicie el programa")
             self.Limpiar_login()
     "--------------------------------------------- REGISTRAR USUARIO --------------------------------------------------"
     def Ventana_registrar_usuario(self):
@@ -173,7 +177,9 @@ class Login:
         boton_registrar=Button(frame_botones,text="REGISTRAR",command=self.Registrar_usuario ,height=2,width=10,bg="green",fg="white",font=("Comic Sans", 10,"bold")).grid(row=0, column=1, padx=10, pady=15)
         boton_limpiar=Button(frame_botones,text="LIMPIAR",command=self.Limpiar_formulario_registro ,height=2,width=10,bg="gray",fg="white",font=("Comic Sans", 10,"bold")).grid(row=0, column=2, padx=10, pady=15)
         boton_cancelar=Button(frame_botones,text="CERRAR",command=self.Ventana_registrar.destroy ,height=2,width=10,bg="red",fg="white",font=("Comic Sans", 10,"bold")).grid(row=0, column=3, padx=10, pady=15)
-    
+
+        self.Ventana_registrar.mainloop()
+
     def Ejecutar_consulta(self, query, parameters=()):
         with sqlite3.connect(self.db_name) as conexion:
             cursor=conexion.cursor()
@@ -192,7 +198,6 @@ class Login:
             self.repetir_password.delete(0, END)
             self.combo_pregunta.delete(0, END)
             self.respuesta.delete(0, END)
-        
         
     def Validar_formulario_completo_registro(self):
         if len(self.dni.get()) !=0 and len(self.nombres.get()) !=0 and len(self.apellidos.get()) !=0 and len(self.combo_sexo.get()) !=0 and len(self.edad.get()) !=0 and len(self.password.get()) !=0 and len(self.repetir_password.get()) !=0 and len(self.correo.get()) !=0 and len(self.respuesta.get()) !=0:
@@ -231,7 +236,6 @@ class Login:
             messagebox.showinfo("REGISTRO EXITOSO", f'Bienvenido {self.nombres.get()} {self.apellidos.get()}')
             print('USUARIO CREADO')
             self.Limpiar_formulario_registro()
-            
 
     "--------------------------------------------- RECUPERAR CONTRASEÑA --------------------------------------------------"  
     def Ventana_recuperar_password(self):
@@ -290,6 +294,8 @@ class Login:
         boton_recuperar=Button(frame_botones,text="RECUPERAR",command=self.Restablecer_contraseña ,height=2,width=10,bg="green",fg="white",font=("Comic Sans", 10,"bold")).grid(row=0, column=1, padx=10, pady=10)
         boton_cancelar=Button(frame_botones,text="CANCELAR",command=self.Ventana_recuperar.destroy ,height=2,width=10,bg="red",fg="white",font=("Comic Sans", 10,"bold")).grid(row=0, column=3, padx=10, pady=10)
 
+        self.Ventana_recuperar.mainloop()
+
     def Limpiar_formulario_recuperar(self):
         self.dni.delete(0, END)
         self.respuesta.delete(0, END)
@@ -334,8 +340,7 @@ class Login:
             messagebox.showinfo("CONTRASEÑA RECUPERADA", f'Contraseña actualizada correctamente: {self.nuevo_password.get()}')
             print('DATOS ACTUALIZADO')
             self.Limpiar_formulario_recuperar()
-
-
+            self.Ventana_recuperar.destroy()
 
 #verificar si el modulo ha sido ejecutado correctamente  
 if __name__ == '__main__':
