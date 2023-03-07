@@ -16,24 +16,29 @@ class Producto():
     def __init__(self, ventana_producto):
         menubar=Menu(ventana_producto)   
         ventana_producto.title("APLICACION")
-        ventana_producto.geometry("800x670")
+        ventana_producto.geometry("769x660")
         ventana_producto.resizable(0,0)
         ventana_producto.config(bd=10,menu=menubar)
-
+        self.widgets_crud()
         "---------------------Menu---------------------------"
         menu=Menu(ventana_producto,tearoff=0)
-        menubar.add_command(label="Registrar",command=self.widgets_crud)
+        menubar.add_command(label="Registrar",command= self.widgets_crud2)
         menubar.add_command(label="Buscar",command=self.widgets_buscador)
         menubar.add_command(label="Salir",command=ventana_producto.quit)
-        self.widgets_crud()
+        
 
     def widgets_crud(self):
+        self.Label_titulo_crud=LabelFrame(ventana_producto)
+        self.Label_titulo_crud.config(bd=0)
+        self.Label_titulo_crud.grid(row=0,column=0,padx=5,pady=5)
         "--------------- Titulo --------------------"
-        titulo= Label(ventana_producto, text="REGISTRO DE PRODUCTOS ELECTRONICOS",fg="black",font=("Comic Sans", 17,"bold"),pady=10).pack()
+        self.titulo_crud= Label(self.Label_titulo_crud, text="REGISTRO DE PRODUCTOS ELECTRONICOS",fg="black",font=("Comic Sans", 17,"bold"))
+        self.titulo_crud.grid(row=0,column=0)
+        
         "--------------- Logos productos --------------------"
         frame_logo_productos = LabelFrame(ventana_producto)
         frame_logo_productos.config(bd=0)
-        frame_logo_productos.pack()
+        frame_logo_productos.grid(row=1,column=0,padx=5,pady=5)
 
         #Logo arduino
         imagen_arduino=Image.open("D:/EIGHTA/PYTHON-TKINTER/SISTEMA DESKTOP/Imagenes/arduino-logo.png")
@@ -58,51 +63,56 @@ class Producto():
         label_imagen= Label(frame_logo_productos, image= render)
         label_imagen.image=render
         label_imagen.grid(row=0, column=2,padx=15,pady=5)
-
+        
         "--------------- Frame marco --------------------"
-        marco = LabelFrame(ventana_producto, text="Informacion del producto",font=("Comic Sans", 10,"bold"),pady=5)
-        marco.config(bd=2)
-        marco.pack()
+        self.frame_registro = LabelFrame(ventana_producto, text="Informacion del producto",font=("Comic Sans", 10,"bold"),pady=5)
+        self.frame_registro.config(bd=2)
+        self.frame_registro.grid(row=2,column=0,padx=5,pady=5)
 
         "--------------- Formulario --------------------"
-        label_codigo=Label(marco,text="Codigo del producto: ",font=("Comic Sans", 10,"bold")).grid(row=0,column=0,sticky='s',padx=5,pady=8)
-        self.codigo=Entry(marco,width=25)
+        label_codigo=Label(self.frame_registro,text="Codigo del producto: ",font=("Comic Sans", 10,"bold")).grid(row=0,column=0,sticky='s',padx=5,pady=8)
+        self.codigo=Entry(self.frame_registro,width=25)
         self.codigo.focus()
         self.codigo.grid(row=0, column=1, padx=5, pady=8)
         
-        label_nombre=Label(marco,text="Nombre del producto: ",font=("Comic Sans", 10,"bold")).grid(row=1,column=0,sticky='s',padx=5,pady=8)
-        self.nombre=Entry(marco,width=25)
+        label_nombre=Label(self.frame_registro,text="Nombre del producto: ",font=("Comic Sans", 10,"bold")).grid(row=1,column=0,sticky='s',padx=5,pady=8)
+        self.nombre=Entry(self.frame_registro,width=25)
         self.nombre.grid(row=1, column=1, padx=5, pady=8)
         
-        label_categoria=Label(marco,text="Categoria: ",font=("Comic Sans", 10,"bold")).grid(row=2,column=0,sticky='s',padx=5,pady=9)
-        self.combo_categoria=ttk.Combobox(marco,values=["Microcontrolador","Microordenador","Sensores","Accesorios"], width=22,state="readonly")
+        label_categoria=Label(self.frame_registro,text="Categoria: ",font=("Comic Sans", 10,"bold")).grid(row=2,column=0,sticky='s',padx=5,pady=9)
+        self.combo_categoria=ttk.Combobox(self.frame_registro,values=["Microcontrolador","Microordenador","Sensores","Accesorios"], width=22,state="readonly")
         self.combo_categoria.current(0)
         self.combo_categoria.grid(row=2,column=1,padx=5,pady=0)
 
 
-        label_cantidad=Label(marco,text="Cantidad: ",font=("Comic Sans", 10,"bold")).grid(row=0,column=2,sticky='s',padx=5,pady=8)
-        self.cantidad=Entry(marco,width=25)
+        label_cantidad=Label(self.frame_registro,text="Cantidad: ",font=("Comic Sans", 10,"bold")).grid(row=0,column=2,sticky='s',padx=5,pady=8)
+        self.cantidad=Entry(self.frame_registro,width=25)
         self.cantidad.grid(row=0, column=3, padx=5, pady=8)
 
-        label_precio=Label(marco,text="Precio (S/.): ",font=("Comic Sans", 10,"bold")).grid(row=1,column=2,sticky='s',padx=5,pady=8)
-        self.precio=Entry(marco,width=25)
+        label_precio=Label(self.frame_registro,text="Precio (S/.): ",font=("Comic Sans", 10,"bold")).grid(row=1,column=2,sticky='s',padx=5,pady=8)
+        self.precio=Entry(self.frame_registro,width=25)
         self.precio.grid(row=1, column=3, padx=5, pady=8)
 
-        label_descripcion=Label(marco,text="Descripcion: ",font=("Comic Sans", 10,"bold")).grid(row=2,column=2,sticky='s',padx=10,pady=8)
-        self.descripcion=Entry(marco,width=25)
+        label_descripcion=Label(self.frame_registro,text="Descripcion: ",font=("Comic Sans", 10,"bold")).grid(row=2,column=2,sticky='s',padx=10,pady=8)
+        self.descripcion=Entry(self.frame_registro,width=25)
         self.descripcion.grid(row=2, column=3, padx=10, pady=8)
-
+        
         "--------------- Frame botones --------------------"
-        frame_botones=Frame(ventana_producto)
-        frame_botones.pack()
+        self.frame_botones_registro=LabelFrame(ventana_producto)
+        self.frame_botones_registro.config(bd=0)
+        self.frame_botones_registro.grid(row=3,column=0,padx=5,pady=5)
 
         "--------------- Botones --------------------"
-        boton_registrar=Button(frame_botones,text="REGISTRAR",command=self.Agregar_producto,height=2,width=10,bg="green",fg="white",font=("Comic Sans", 10,"bold")).grid(row=0, column=1, padx=10, pady=15)
-        boton_editar=Button(frame_botones,text="EDITAR",command=self.Editar_producto ,height=2,width=10,bg="gray",fg="white",font=("Comic Sans", 10,"bold")).grid(row=0, column=2, padx=10, pady=15)
-        boton_eliminar=Button(frame_botones,text="ELIMINAR",command=self.Eliminar_producto,height=2,width=10,bg="red",fg="white",font=("Comic Sans", 10,"bold")).grid(row=0, column=3, padx=10, pady=15)
+        boton_registrar=Button(self.frame_botones_registro,text="REGISTRAR",command=self.Agregar_producto,height=2,width=12,bg="green",fg="white",font=("Comic Sans", 10,"bold")).grid(row=0, column=1, padx=10, pady=15)
+        boton_editar=Button(self.frame_botones_registro,text="EDITAR",command=self.Editar_producto ,height=2,width=12,bg="gray",fg="white",font=("Comic Sans", 10,"bold")).grid(row=0, column=2, padx=10, pady=15)
+        boton_eliminar=Button(self.frame_botones_registro,text="ELIMINAR",command=self.Eliminar_producto,height=2,width=12,bg="red",fg="white",font=("Comic Sans", 10,"bold")).grid(row=0, column=3, padx=10, pady=15)
+        
+        "--------------- Tabla --------------------"
+        self.frame_tabla_crud=LabelFrame(ventana_producto)
+        self.frame_tabla_crud.config(bd=2)
+        self.frame_tabla_crud.grid(row=4,column=0,padx=5,pady=5)
 
-        "--------------- Tabla --------------------"    
-        self.tree=ttk.Treeview(height=13, columns=("columna1","columna2","columna3","columna4","columna5"))
+        self.tree=ttk.Treeview(self.frame_tabla_crud,height=11, columns=("columna1","columna2","columna3","columna4","columna5"))
         self.tree.heading("#0",text='Codigo', anchor=CENTER)
         self.tree.column("#0", width=90, minwidth=75, stretch=NO)
         
@@ -120,89 +130,63 @@ class Producto():
         
         self.tree.heading("columna5",text='Descripcion', anchor=CENTER)
         
-        self.tree.pack()
+        self.tree.grid(row=0,column=0,sticky=E)
         
         self.Obtener_productos()
+        
+    def widgets_crud2(self):
+        self.widgets_buscador_remove()
+        self.widgets_crud()
 
     def widgets_buscador(self):
-        "--------------- Titulo --------------------"
-        titulo_buscador= Label(ventana_producto, text="BUSCADOR DE PRODUCTOS ELECTRONICOS",fg="black",font=("Comic Sans", 17,"bold"),pady=10).pack()
-
-        "--------------- Logos productos --------------------"
-        frame_logo_productos = LabelFrame(ventana_producto)
-        frame_logo_productos.config(bd=0)
-        frame_logo_productos.pack()
-
-        #Logo arduino
-        imagen_arduino=Image.open("D:/EIGHTA/PYTHON-TKINTER/SISTEMA DESKTOP/Imagenes/arduino-logo.png")
-        nueva_imagen=imagen_arduino.resize((60,60))
-        render=ImageTk.PhotoImage(nueva_imagen)
-        label_imagen= Label(frame_logo_productos, image= render)
-        label_imagen.image=render
-        label_imagen.grid(row=0, column=0,padx=15,pady=5)
-
-        #Logo nodemcu
-        imagen_nodemcu=Image.open("D:/EIGHTA/PYTHON-TKINTER/SISTEMA DESKTOP/Imagenes/nodemcu-logo.png")
-        nueva_imagen=imagen_nodemcu.resize((60,60))
-        render=ImageTk.PhotoImage(nueva_imagen)
-        label_imagen= Label(frame_logo_productos, image= render)
-        label_imagen.image=render
-        label_imagen.grid(row=0, column=1,padx=15,pady=5)
+        #REMOVER OTROS WIDGETS
+        self.widgets_crud_remove()
         
-        #Logo raspberry
-        imagen_raspberry=Image.open("D:/EIGHTA/PYTHON-TKINTER/SISTEMA DESKTOP/Imagenes/raspberry-logo.png")
-        nueva_imagen=imagen_raspberry.resize((60,60))
-        render=ImageTk.PhotoImage(nueva_imagen)
-        label_imagen= Label(frame_logo_productos, image= render)
-        label_imagen.image=render
-        label_imagen.grid(row=0, column=2,padx=15,pady=5)
 
-        "--------------- Frame marco --------------------"
-        marco_buscar_producto = LabelFrame(ventana_producto, text="Buscar producto",font=("Comic Sans", 10,"bold"),pady=10)
-        marco_buscar_producto.config(bd=2)
-        marco_buscar_producto.pack()
+        self.Label_titulo_buscador=LabelFrame(ventana_producto)
+        self.Label_titulo_buscador.config(bd=0)
+        self.Label_titulo_buscador.grid(row=0,column=0,padx=5,pady=5)
 
+        "--------------- Titulo --------------------"
+        self.titulo_buscador= Label(self.Label_titulo_buscador, text="BUSCADOR DE PRODUCTOS ELECTRONICOS",fg="black",font=("Comic Sans", 17,"bold"))
+        self.titulo_buscador.grid(row=0,column=0)
+        
+        "--------------- Frame buscar --------------------"
+        self.frame_buscar_producto = LabelFrame(ventana_producto, text="Buscar producto",font=("Comic Sans", 10,"bold"),pady=10)
+        self.frame_buscar_producto.config(bd=2)
+        self.frame_buscar_producto.grid(row=2,column=0,padx=5,pady=5)
+        
         "--------------- Formulario Buscar--------------------"
-        label_buscar=Label(marco_buscar_producto,text="Buscar Por: ",font=("Comic Sans", 10,"bold")).grid(row=0,column=0,sticky='s',padx=5,pady=5)
-        self.combo_buscar=ttk.Combobox(marco_buscar_producto,values=["Codigo","Nombre"], width=22,state="readonly")
+        self.label_buscar=Label(self.frame_buscar_producto,text="Buscar Por: ",font=("Comic Sans", 10,"bold")).grid(row=0,column=0,sticky='s',padx=5,pady=5)
+        self.combo_buscar=ttk.Combobox(self.frame_buscar_producto,values=["Codigo","Nombre"], width=22,state="readonly")
         self.combo_buscar.current(0)
         self.combo_buscar.grid(row=0,column=1,padx=5,pady=5)
 
-        label_codigo_codigo=Label(marco_buscar_producto,text="Codigo / Nombre del producto: ",font=("Comic Sans", 10,"bold")).grid(row=0,column=2,sticky='s',padx=5,pady=5)
-        self.codigo_nombre=Entry(marco_buscar_producto,width=25)
+        label_codigo_codigo=Label(self.frame_buscar_producto,text="Codigo / Nombre del producto: ",font=("Comic Sans", 10,"bold")).grid(row=0,column=2,sticky='s',padx=5,pady=5)
+        self.codigo_nombre=Entry(self.frame_buscar_producto,width=25)
         self.codigo_nombre.focus()
         self.codigo_nombre.grid(row=0, column=3, padx=10, pady=5)
 
-        boton_buscar=Button(ventana_producto,text="BUSCAR",command=ventana_producto.destroy,height=2,width=20,bg="black",fg="white",font=("Comic Sans", 10,"bold"))
-        boton_buscar.pack(pady=15)
+        "--------------- Frame marco --------------------"
+        self.frame_boton_buscar=LabelFrame(ventana_producto)
+        self.frame_boton_buscar.config(bd=0)
+        self.frame_boton_buscar.grid(row=3,column=0,padx=5,pady=5)
+        "--------------- Boton --------------------"  
+        self.boton_buscar=Button(self.frame_boton_buscar,text="BUSCAR",command=ventana_producto.destroy,height=2,width=20,bg="black",fg="white",font=("Comic Sans", 10,"bold"))
+        self.boton_buscar.grid(row=0,column=0,padx=5,pady=5)
 
-        "--------------- Tabla --------------------"    
-        self.tree=ttk.Treeview(height=13, columns=("columna1","columna2","columna3","columna4","columna5"))
-        
-        self.tree.heading("#0",text='Codigo', anchor=CENTER)
-        self.tree.column("#0", width=90, minwidth=75, stretch=NO)
-        
-        self.tree.heading("columna1",text='Nombre', anchor=CENTER)
-        self.tree.column("columna1", width=150, minwidth=75, stretch=NO)
-        
-        self.tree.heading("columna2",text='Categoria', anchor=CENTER)
-        self.tree.column("columna2", width=150, minwidth=75, stretch=NO)
-                
-        self.tree.heading("columna3",text='Cantidad', anchor=CENTER)
-        self.tree.column("columna3", width=70, minwidth=60, stretch=NO)
-        
-        self.tree.heading("columna4",text='Precio', anchor=CENTER)
-        self.tree.column("columna4", width=70, minwidth=60, stretch=NO)
-        
-        self.tree.heading("columna5",text='Descripcion', anchor=CENTER)
-        
-        self.tree.pack(pady=10)
-        
-        #Remover otros labels
-        
+        self.tree.delete(*self.tree.get_children())
 
-        self.Obtener_productos()
+    def widgets_crud_remove(self):
+        self.Label_titulo_crud.destroy()
+        self.frame_registro.destroy()
+        self.frame_botones_registro.destroy()
 
+    def widgets_buscador_remove(self):
+        self.Label_titulo_buscador.destroy()
+        self.frame_buscar_producto.destroy()
+        self.frame_boton_buscar.destroy()
+        
     "--------------- CRUD --------------------"               
     def Obtener_productos(self):
         records=self.tree.get_children()
@@ -321,11 +305,6 @@ class Producto():
         self.precio.delete(0, END)
         self.descripcion.delete(0, END)
 
-    def clear_menu(self): 
-        for widget in ventana_producto.winfo_children():
-            widget.destroy()
-        ventana_producto.pack_forget()
-               
 if __name__ == '__main__':
     ventana_producto=Tk()
     label_crud=Label(ventana_producto)
