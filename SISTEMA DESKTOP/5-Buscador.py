@@ -19,15 +19,19 @@ class Producto():
         ventana_producto.geometry("769x660")
         ventana_producto.resizable(0,0)
         ventana_producto.config(bd=10,menu=menubar)
-        self.widgets_crud()
-        "---------------------Menu---------------------------"
-        menu=Menu(ventana_producto,tearoff=0)
-        menubar.add_command(label="Registrar",command= self.widgets_crud2)
-        menubar.add_command(label="Buscar",command=self.widgets_buscador)
-        menubar.add_command(label="Salir",command=ventana_producto.quit)
         
+        "---------------------Menu---------------------------"
+        Producto=Menu(menubar,tearoff=0)
+        menubar.add_cascade(label="Productos",menu=Producto)
+
+        self.boton_registrar=Producto.add_command(label="Registrar",command= self.widgets_crud2)
+        self.boton_buscar=Producto.add_command(label="Buscar",command=self.widgets_buscador)
+        #self.boton_cerrar=Producto.add_command(label="Salir",command=ventana_producto.quit)
+        
+        self.widgets_crud()
 
     def widgets_crud(self):
+        
         self.Label_titulo_crud=LabelFrame(ventana_producto)
         self.Label_titulo_crud.config(bd=0)
         self.Label_titulo_crud.grid(row=0,column=0,padx=5,pady=5)
@@ -136,13 +140,12 @@ class Producto():
         
     def widgets_crud2(self):
         self.widgets_buscador_remove()
+        self.widgets_crud_remove()        
         self.widgets_crud()
 
     def widgets_buscador(self):
         #REMOVER OTROS WIDGETS
         self.widgets_crud_remove()
-        
-
         self.Label_titulo_buscador=LabelFrame(ventana_producto)
         self.Label_titulo_buscador.config(bd=0)
         self.Label_titulo_buscador.grid(row=0,column=0,padx=5,pady=5)
@@ -172,7 +175,7 @@ class Producto():
         self.frame_boton_buscar.config(bd=0)
         self.frame_boton_buscar.grid(row=3,column=0,padx=5,pady=5)
         "--------------- Boton --------------------"  
-        self.boton_buscar=Button(self.frame_boton_buscar,text="BUSCAR",command=ventana_producto.destroy,height=2,width=20,bg="black",fg="white",font=("Comic Sans", 10,"bold"))
+        self.boton_buscar=Button(self.frame_boton_buscar,text="BUSCAR",command=self.Buscar_productos,height=2,width=20,bg="black",fg="white",font=("Comic Sans", 10,"bold"))
         self.boton_buscar.grid(row=0,column=0,padx=5,pady=5)
 
         self.tree.delete(*self.tree.get_children())
@@ -282,8 +285,24 @@ class Producto():
         self.Obtener_productos()
 
     def Buscar_productos(self):
-        self.widgets_buscador()
+        records=self.tree.get_children()
+        for element in records:
+            self.tree.delete(element)
+
+        if ((self.combo_buscar.get())=='Codigo'):
+            query="SELECT * FROM Productos WHERE Codigo LIKE ?" 
+            parameters=(self.codigo_nombre.get()+"%")
+            db_rows=self.Ejecutar_consulta(query,(parameters,))
+            for row in db_rows:
+                self.tree.insert("",0, text=row[1],values=(row[2],row[3],row[4],row[5],row[6]))
         
+        else:
+            query=("SELECT * FROM Productos WHERE Nombre LIKE ? ")
+            parameters=(self.codigo_nombre.get()+"%")
+            db_rows=self.Ejecutar_consulta(query,(parameters,))
+            for row in db_rows:
+                self.tree.insert("",0, text=row[1],values=(row[2],row[3],row[4],row[5],row[6]))  
+
     "--------------- OTRAS FUNCIONES --------------------"
     def Ejecutar_consulta(self, query, parameters=()):
         with sqlite3.connect(self.db_name) as conexion:
@@ -310,5 +329,3 @@ if __name__ == '__main__':
     label_crud=Label(ventana_producto)
     application=Producto(ventana_producto)
     ventana_producto.mainloop()
-
-
