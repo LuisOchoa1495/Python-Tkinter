@@ -11,6 +11,7 @@ from PIL import ImageTk, Image
 import sqlite3
 
 
+
 class Producto():
     db_name='database_proyecto.db'
     def __init__(self, ventana_producto):
@@ -207,7 +208,6 @@ class Producto():
         self.frame_boton_buscar.grid_remove()
 
     def widgets_informacion(self):
-
         self.Label_informacion.config(bd=0)
         self.Label_informacion.grid(row=0,column=0)
         "--------------- Titulo --------------------"
@@ -338,28 +338,27 @@ class Producto():
         self.Obtener_productos()
 
     def Buscar_productos(self):
-        if(self.Validar_busqueda()):
-            #Obtener todos los elementos con get_children(), que retorna una tupla de ID.
-            records=self.tree.get_children()
-            for element in records:
-                self.tree.delete(element)
-            
-            if (self.combo_buscar.get()=='Codigo'):
-                query=("SELECT * FROM Productos WHERE Codigo LIKE ? ") 
-                parameters=(self.codigo_nombre.get()+"%")
-                db_rows=self.Ejecutar_consulta(query,(parameters,))
-                for row in db_rows:
-                    self.tree.insert("",0, text=row[1],values=(row[2],row[3],row[4],row[5],row[6]))
-                if(list(self.tree.get_children())==[]):
-                    messagebox.showerror("ERROR","Producto no encontrado")
-            else:
-                query=("SELECT * FROM Productos WHERE Nombre LIKE ? ")
-                parameters=("%"+self.codigo_nombre.get()+"%")
-                db_rows=self.Ejecutar_consulta(query,(parameters,))
-                for row in db_rows:
-                    self.tree.insert("",0, text=row[1],values=(row[2],row[3],row[4],row[5],row[6]))
-                if(list(self.tree.get_children())==[]):
-                    messagebox.showerror("ERROR","Producto no encontrado")
+        #Obtener todos los elementos con get_children(), que retorna una tupla de ID.
+        records=self.tree.get_children()
+        for element in records:
+            self.tree.delete(element)
+        
+        if (self.combo_buscar.get()=='Codigo'):
+            query=("SELECT * FROM Productos WHERE Codigo LIKE ? ") 
+            parameters=(self.codigo_nombre.get()+"%")
+            db_rows=self.Ejecutar_consulta(query,(parameters,))
+            for row in db_rows:
+                self.tree.insert("",0, text=row[1],values=(row[2],row[3],row[4],row[5],row[6]))
+            if(list(self.tree.get_children())==[]):
+               messagebox.showerror("ERROR","Producto no encontrado")
+        else:
+            query=("SELECT * FROM Productos WHERE Nombre LIKE ? ")
+            parameters=("%"+self.codigo_nombre.get()+"%")
+            db_rows=self.Ejecutar_consulta(query,(parameters,))
+            for row in db_rows:
+                self.tree.insert("",0, text=row[1],values=(row[2],row[3],row[4],row[5],row[6]))
+            if(list(self.tree.get_children())==[]):
+               messagebox.showerror("ERROR","Producto no encontrado")
 
     "--------------- OTRAS FUNCIONES --------------------"
     def Ejecutar_consulta(self, query, parameters=()):
@@ -375,13 +374,6 @@ class Producto():
         else:
              messagebox.showerror("ERROR", "Complete todos los campos del formulario") 
     
-    def Validar_busqueda(self):
-        if len(self.codigo_nombre.get()) !=0:
-            return True
-        else:
-             self.tree.delete(*self.tree.get_children())
-             messagebox.showerror("ERROR", "Complete todos los campos para la busqueda") 
-
     def Limpiar_formulario(self):
         self.codigo.delete(0, END)
         self.nombre.delete(0, END)
