@@ -8,8 +8,6 @@ from tkinter import ttk
 from tkinter import messagebox 
 #Python image Library
 from PIL import ImageTk, Image
-from subprocess import call
-import sys
 import sqlite3
 
 class Login:
