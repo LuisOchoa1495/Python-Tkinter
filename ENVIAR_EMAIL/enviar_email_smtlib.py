@@ -14,7 +14,7 @@ from PIL import ImageTk, Image
 "------------INTERFAZ TKINTER------------"
 ventana =Tk()
 ventana.title("ALICACION DE MENSAJERIA")
-ventana.geometry("338x365")
+ventana.geometry("335x385")
 ventana.resizable(0,0)
 ventana.config(bd=10)
 
