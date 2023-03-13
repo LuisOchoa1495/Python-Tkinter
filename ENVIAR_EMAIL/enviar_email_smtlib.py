@@ -32,7 +32,7 @@ label_imagen.grid(row=1,column=0,columnspan=2)
 destinatario=StringVar(ventana)
 asunto=StringVar(ventana)
 
-#Label(ventana, text="Mi correo: luisochoa.1495@gmail.com",fg="white",bg="blue",font=("Arial", 10,"bold"),padx=5,pady=5).grid(row=2,column=0,columnspan=2,pady=5)
+Label(ventana, text="Mi correo: luisochoa.1495@gmail.com",fg="white",bg="blue",font=("Arial", 10,"bold"),padx=5,pady=5).grid(row=2,column=0,columnspan=2,pady=5)
 
 Label(ventana, text="Destinatario:",fg="black",font=("Arial", 10,"bold"),padx=5,pady=5).grid(row=3,column=0)
 Entry(ventana,textvariable=destinatario, width=34).grid(row=3,column=1)
