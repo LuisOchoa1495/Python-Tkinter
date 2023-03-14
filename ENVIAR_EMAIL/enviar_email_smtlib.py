@@ -57,7 +57,7 @@ def enviar_email():
     email.set_content(str(mensaje.get(1.0, 'end')))
     #Envio de email
     smtp = smtplib.SMTP_SSL("smtp.gmail.com")
-    smtp.login(remitente, "suttsabovppzvsep")
+    smtp.login(remitente, "clave-personal")
     smtp.sendmail(remitente, destinatario.get(), email.as_string())
     messagebox.showinfo("MENSAJERIA","Mensaje enviado correctamente ")
     smtp.quit()
