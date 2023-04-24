@@ -11,7 +11,6 @@ from PIL import ImageTk, Image
 import sqlite3
 
 
-
 class Producto():
     db_name='database_proyecto.db'
     def __init__(self, ventana_producto):

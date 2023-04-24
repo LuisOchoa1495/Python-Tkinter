@@ -5,12 +5,12 @@ from tkinter import messagebox
 from PIL import ImageTk, Image
 import sqlite3
 
-class Producto():
+class Tienda():
     db_name='tienda_diaz.db'
     def __init__(self, ventana_producto):
         menubar=Menu(ventana_producto)   
         ventana_producto.title("TIENDA DIAZ")
-        ventana_producto.geometry("770x680")
+        ventana_producto.geometry("770x700")
         ventana_producto.resizable(0,0)
         ventana_producto.config(bd=10,menu=menubar)
         
@@ -26,48 +26,60 @@ class Producto():
         #Iconos
         self.img_registrar=PhotoImage(file="./PROYECTO_TIENDA/img/registrar.png")
         self.img_buscar=PhotoImage(file="./PROYECTO_TIENDA/img/buscar.png")
+        self.img_ventas=PhotoImage(file="./PROYECTO_TIENDA/img/ventas.png")
+        self.img_nueva_venta=PhotoImage(file="./PROYECTO_TIENDA/img/nueva_venta.png")
+        self.img_cliente=PhotoImage(file="./PROYECTO_TIENDA/img/cliente.png")
+        self.img_codigo=PhotoImage(file="./PROYECTO_TIENDA/img/codigo.png")
         self.img_informacion=PhotoImage(file="./PROYECTO_TIENDA/img/informacion.png")
         #Acciones de menu
         self.boton_registrar=Productos.add_command(label="Registrar",command= self.widgets_crud,image=self.img_registrar,compound=LEFT)
         self.boton_buscar=Productos.add_command(label="Buscar",command=self.widgets_buscador,image=self.img_buscar,compound=LEFT)
+        self.boton_nueva_venta=Ventas.add_command(label="Nueva Venta",command=self.widgets_buscador,image=self.img_nueva_venta,compound=LEFT)        
+        self.boton_ventas=Ventas.add_command(label="Ventas",command=self.widgets_buscador,image=self.img_ventas,compound=LEFT)        
+        self.boton_cliente=Ventas.add_command(label="Clientes",command=self.widgets_cliente,image=self.img_cliente,compound=LEFT)        
+        self.boton_informacion=Informacion.add_command(label="Codigo Producto",command=self.widgets_codigos,image=self.img_codigo,compound=LEFT)
         self.boton_informacion=Informacion.add_command(label="Informacion del sistema",command=self.widgets_informacion,image=self.img_informacion,compound=LEFT)
         
         "---------------------Widgets---------------------------"
         #widgets crud
-        self.Label_titulo_crud=LabelFrame(ventana_producto)
         self.frame_logo_productos = LabelFrame(ventana_producto)
         self.frame_registro = LabelFrame(ventana_producto, text="Registrar producto",font=("Comic Sans", 10,"bold"),pady=5)
         self.frame_botones_registro=LabelFrame(ventana_producto)
         self.frame_tabla_crud=LabelFrame(ventana_producto)
         #widgets buscador
-        self.Label_titulo_buscador=LabelFrame(ventana_producto)
         self.frame_buscar_producto = LabelFrame(ventana_producto, text="Buscar producto",font=("Comic Sans", 10,"bold"),pady=10)
         self.frame_boton_buscar=LabelFrame(ventana_producto)
+        self.frame_tabla_buscador=LabelFrame(ventana_producto)
+        #widgets cliente
+        self.frame_nuevo_cliente = LabelFrame(ventana_producto,text="Nuevo Cliente",font=("Comic Sans", 10,"bold"),pady=10)
+        self.frame_botones_registro_cliente = LabelFrame(ventana_producto)
+        self.frame_buscar_cliente = LabelFrame(ventana_producto,text="Buscar Cliente",font=("Comic Sans", 10,"bold"),pady=10)
+        self.frame_tabla_clientes=LabelFrame(ventana_producto)
+        #Codigos productos
+        self.frame_codigo = LabelFrame(ventana_producto)
         #widgets informacion
         self.Label_informacion = LabelFrame(ventana_producto)
 
         #Pantalla inicial
         self.widgets_crud()
 
+    "--------------- WIDGETS--------------------"  
     def widgets_crud(self):
-        self.Label_titulo_crud.config(bd=0)
-        self.Label_titulo_crud.grid(row=0,column=0)
-
         "--------------- Logos tienda --------------------"
         self.frame_logo_productos.config(bd=0)
-        self.frame_logo_productos.grid(row=1,column=0,padx=5,pady=5)
+        self.frame_logo_productos.grid(row=0,column=0,padx=5,pady=5)
 
-        #Logo arduino
-        imagen_arduino=Image.open("./PROYECTO_TIENDA/img/logo-tienda.png")
-        nueva_imagen=imagen_arduino.resize((320,140))
+        #Logo 
+        imagen=Image.open("./PROYECTO_TIENDA/img/logo-tienda.png")
+        nueva_imagen=imagen.resize((320,150))
         render=ImageTk.PhotoImage(nueva_imagen)
         label_imagen= Label(self.frame_logo_productos, image= render)
         label_imagen.image=render
         label_imagen.grid(row=0, column=0)
         
-        "--------------- Frame marco --------------------"
+        "--------------- Frame marco registro --------------------"
         self.frame_registro.config(bd=2)
-        self.frame_registro.grid(row=2,column=0,padx=5,pady=5)
+        self.frame_registro.grid(row=1,column=0,padx=5,pady=5)
 
         "--------------- Formulario --------------------"
         label_codigo=Label(self.frame_registro,text="Codigo del producto: ",font=("Comic Sans", 10,"bold")).grid(row=0,column=0,sticky='s',padx=5,pady=8)
@@ -98,7 +110,7 @@ class Producto():
         
         "--------------- Frame botones --------------------"
         self.frame_botones_registro.config(bd=0)
-        self.frame_botones_registro.grid(row=3,column=0,padx=5,pady=5)
+        self.frame_botones_registro.grid(row=2,column=0,padx=5,pady=5)
 
         "--------------- Botones --------------------"
         boton_registrar=Button(self.frame_botones_registro,text="REGISTRAR",command=self.Agregar_producto,height=2,width=12,bg="green",fg="white",font=("Comic Sans", 10,"bold")).grid(row=0, column=1, padx=10, pady=10)
@@ -107,7 +119,7 @@ class Producto():
         
         "--------------- Tabla --------------------"
         self.frame_tabla_crud.config(bd=2)
-        self.frame_tabla_crud.grid(row=4,column=0,padx=5,pady=5)
+        self.frame_tabla_crud.grid(row=3,column=0,padx=5,pady=5)
 
         self.tree=ttk.Treeview(self.frame_tabla_crud,height=11, columns=("columna1","columna2","columna3","columna4","columna5"))
         self.tree.heading("#0",text='Codigo', anchor=CENTER)
@@ -133,15 +145,15 @@ class Producto():
         
         #REMOVER OTROS WIDGETS
         self.widgets_buscador_remove()
-        self.Label_informacion.grid_remove()
+        self.widgets_informacion_remove()
+        self.widgets_cliente_remove()
+        self.widgets_codigos_remove()
 
     def widgets_buscador(self):
-        self.Label_titulo_buscador.config(bd=0)
-        self.Label_titulo_buscador.grid(row=0,column=0,padx=5,pady=5)
         
-        "--------------- Frame buscar --------------------"
+        "--------------- Frame marco buscar --------------------"
         self.frame_buscar_producto.config(bd=2)
-        self.frame_buscar_producto.grid(row=2,column=0,padx=5,pady=5)
+        self.frame_buscar_producto.grid(row=1,column=0,padx=5,pady=5)
         
         "--------------- Formulario Buscar--------------------"
         self.label_buscar=Label(self.frame_buscar_producto,text="Buscar Por: ",font=("Comic Sans", 10,"bold")).grid(row=0,column=0,sticky='s',padx=5,pady=5)
@@ -156,70 +168,209 @@ class Producto():
 
         "--------------- Frame marco --------------------"
         self.frame_boton_buscar.config(bd=0)
-        self.frame_boton_buscar.grid(row=3,column=0,padx=5,pady=5)
+        self.frame_boton_buscar.grid(row=2,column=0,padx=5,pady=5)
         "--------------- Boton --------------------"
         self.boton_buscar=Button(self.frame_boton_buscar,text="BUSCAR",command=self.Buscar_productos,height=2,width=20,bg="black",fg="white",font=("Comic Sans", 10,"bold"))
         self.boton_buscar.grid(row=0,column=0,padx=5,pady=5)
 
-        self.tree.delete(*self.tree.get_children())
+        "--------------- Tabla --------------------"
+        self.frame_tabla_buscador.config(bd=2)
+        self.frame_tabla_buscador.grid(row=3,column=0,padx=5,pady=5)
+
+        self.tree_buscar=ttk.Treeview(self.frame_tabla_buscador,height=11, columns=("columna1","columna2","columna3","columna4","columna5"))
+        self.tree_buscar.heading("#0",text='Codigo', anchor=CENTER)
+        self.tree_buscar.column("#0", width=90, minwidth=75, stretch=NO)
+        
+        self.tree_buscar.heading("columna1",text='Nombre', anchor=CENTER)
+        self.tree_buscar.column("columna1", width=150, minwidth=75, stretch=NO)
+        
+        self.tree_buscar.heading("columna2",text='Categoria', anchor=CENTER)
+        self.tree_buscar.column("columna2", width=150, minwidth=75, stretch=NO)
+                
+        self.tree_buscar.heading("columna3",text='Cantidad', anchor=CENTER)
+        self.tree_buscar.column("columna3", width=70, minwidth=60, stretch=NO)
+        
+        self.tree_buscar.heading("columna4",text='Precio', anchor=CENTER)
+        self.tree_buscar.column("columna4", width=70, minwidth=60, stretch=NO)
+        
+        self.tree_buscar.heading("columna5",text='Descripcion', anchor=CENTER)
+        
+        self.tree_buscar.grid(row=0,column=0,sticky=E)
+        self.Obtener_productos()
+        self.tree_buscar.delete(*self.tree_buscar.get_children())
 
         #REMOVER OTROS WIDGETS
         self.widgets_crud_remove()
-        self.Label_informacion.grid_remove()
-        
-    def widgets_crud_remove(self):
-        self.Label_titulo_crud.grid_remove()
-        self.frame_registro.grid_remove()
-        self.frame_botones_registro.grid_remove()
+        self.widgets_informacion_remove()
+        self.widgets_cliente_remove()
+        self.widgets_codigos_remove()
 
-    def widgets_buscador_remove(self):
-        self.Label_titulo_buscador.grid_remove()
-        self.frame_buscar_producto.grid_remove()
-        self.frame_boton_buscar.grid_remove()
+    def widgets_cliente(self):
+        
+        "--------------- Frame marco buscar --------------------"
+        self.frame_nuevo_cliente.config(bd=2)
+        self.frame_nuevo_cliente.grid(row=1,column=0,padx=5,pady=5)
+        
+        "--------------- Registrar cliente --------------------"
+        self.label_dni=Label(self.frame_nuevo_cliente,text="DNI: ",font=("Comic Sans", 10,"bold")).grid(row=0,column=0,sticky='s',padx=5,pady=5)
+        self.dni=Entry(self.frame_nuevo_cliente,width=25)
+        self.dni.focus()
+        self.dni.grid(row=0,column=1,padx=5,pady=5)
+
+        self.label_nombres=Label(self.frame_nuevo_cliente,text="Nombres: ",font=("Comic Sans", 10,"bold")).grid(row=1,column=0,sticky='s',padx=5,pady=5)
+        self.nombres=Entry(self.frame_nuevo_cliente,width=25)
+        self.nombres.grid(row=1, column=1, padx=10, pady=5)
+
+        self.label_apellidos=Label(self.frame_nuevo_cliente,text="Apellidos: ",font=("Comic Sans", 10,"bold")).grid(row=2,column=0,sticky='s',padx=5,pady=5)
+        self.apellidos=Entry(self.frame_nuevo_cliente,width=25)
+        self.apellidos.grid(row=2, column=1, padx=10, pady=5)
+
+        self.label_telefono=Label(self.frame_nuevo_cliente,text="Telefono: ",font=("Comic Sans", 10,"bold")).grid(row=0,column=2,sticky='s',padx=5,pady=5)
+        self.telefono=Entry(self.frame_nuevo_cliente,width=25)
+        self.telefono.grid(row=0, column=3, padx=10, pady=5)
+
+        self.label_email=Label(self.frame_nuevo_cliente,text="E-mail: ",font=("Comic Sans", 10,"bold")).grid(row=1,column=2,sticky='s',padx=5,pady=5)
+        self.email=Entry(self.frame_nuevo_cliente,width=25)
+        self.email.grid(row=1, column=3, padx=10, pady=5)
+
+        self.label_direccion=Label(self.frame_nuevo_cliente,text="Direccion: ",font=("Comic Sans", 10,"bold")).grid(row=2,column=2,sticky='s',padx=5,pady=5)
+        self.direccion=Entry(self.frame_nuevo_cliente,width=30)
+        self.direccion.grid(row=2, column=3, padx=10, pady=5)
+
+        "--------------- Frame botones --------------------"
+        self.boton_registrar=Button(self.frame_nuevo_cliente,text="REGISTRAR",command=self.Agregar_cliente,height=1,width=15,bg="green",fg="white",font=("Comic Sans", 10,"bold"))
+        self.boton_registrar.grid(row=0,column=4,padx=10,pady=5)
+
+        self.boton_editar=Button(self.frame_nuevo_cliente,text="EDITAR",command=self.Editar_cliente,height=1,width=15,bg="gray",fg="white",font=("Comic Sans", 10,"bold"))
+        self.boton_editar.grid(row=1,column=4,padx=10,pady=5)
+
+        self.boton_eliminar=Button(self.frame_nuevo_cliente,text="ELIMINAR",command=self.Eliminar_cliente,height=1,width=15,bg="red",fg="white",font=("Comic Sans", 10,"bold"))
+        self.boton_eliminar.grid(row=2,column=4,padx=10,pady=5)
+        
+        "--------------- Tabla --------------------"
+        self.frame_tabla_clientes.config(bd=2)
+        self.frame_tabla_clientes.grid(row=2,column=0,padx=5,pady=5)
+
+        self.tree_cliente=ttk.Treeview(self.frame_tabla_clientes,height=11, columns=("columna1","columna2","columna3","columna4","columna5"))
+        self.tree_cliente.heading("#0",text='DNI', anchor=CENTER)
+        self.tree_cliente.column("#0", width=90, minwidth=75, stretch=NO)
+        
+        self.tree_cliente.heading("columna1",text='Nombre', anchor=CENTER)
+        self.tree_cliente.column("columna1", width=150, minwidth=75, stretch=NO)
+        
+        self.tree_cliente.heading("columna2",text='Apellidos', anchor=CENTER)
+        self.tree_cliente.column("columna2", width=150, minwidth=75, stretch=NO)
+                
+        self.tree_cliente.heading("columna3",text='Telefono', anchor=CENTER)
+        self.tree_cliente.column("columna3", width=70, minwidth=60, stretch=NO)
+        
+        self.tree_cliente.heading("columna4",text='E-mail', anchor=CENTER)
+        self.tree_cliente.column("columna4", width=70, minwidth=60, stretch=NO)
+        
+        self.tree_cliente.heading("columna5",text='Direccion', anchor=CENTER)
+
+        self.tree_cliente.grid(row=0,column=0,sticky=E)
+        self.Obtener_clientes()
+        #self.tree_cliente.delete(*self.tree_cliente.get_children())
+
+        "--------------- Frame buscar --------------------"
+        self.frame_buscar_cliente.config(bd=2)
+        self.frame_buscar_cliente.grid(row=4,column=0,padx=5,pady=5)
+        "--------------- Buscar cliente --------------------"
+        self.label_buscar_cliente=Label(self.frame_buscar_cliente,text="DNI: ",font=("Comic Sans", 10,"bold")).grid(row=0,column=0,sticky='s',padx=20,pady=10)
+        self.buscar_dni=Entry(self.frame_buscar_cliente,width=30)
+        self.buscar_dni.grid(row=0, column=1, padx=30, pady=5)
+        self.boton_buscar=Button(self.frame_buscar_cliente,text="BUSCAR",command=self.Buscar_cliente,height=1,width=15,bg="black",fg="white",font=("Comic Sans", 10,"bold"))
+        self.boton_buscar.grid(row=0,column=2,padx=30,pady=5)
+
+        self.widgets_buscador_remove()
+        self.widgets_crud_remove()
+        self.widgets_informacion_remove()
+        self.widgets_codigos_remove()
+
+    def widgets_codigos(self):
+        self.frame_codigo.config(bd=0)
+        self.frame_codigo.grid(row=0,column=0)
+        imagen=Image.open("./PROYECTO_TIENDA/img/codigos.png")
+        nueva_imagen=imagen.resize((750,650))
+        render=ImageTk.PhotoImage(nueva_imagen)
+        label_imagen= Label(self.frame_codigo, image= render)
+        label_imagen.image=render
+        label_imagen.grid(row=0,column=0)
+
+        self.widgets_buscador_remove()
+        self.widgets_crud_remove()
+        self.widgets_cliente_remove()
+        self.widgets_informacion_remove()
 
     def widgets_informacion(self):
 
         self.Label_informacion.config(bd=0)
         self.Label_informacion.grid(row=0,column=0)
         "--------------- Titulo --------------------"
-        self.Label_titulo = Label(self.Label_informacion,text="APLICACION DE ESCRITORIO",fg="white",bg="black",font=("Comic Sans", 23,"bold"),padx=138,pady=20)
+        self.Label_titulo = Label(self.Label_informacion,text="APLICACION DE ESCRITORIO",fg="white",bg="black",font=("Comic Sans", 23,"bold"),padx=150,pady=20)
         self.Label_titulo.grid(row=0,column=0)
 
         "--------------- Logos imagenes--------------------"
         #Logo 
-        imagen_arduino=Image.open("D:/EIGHTA/PYTHON-TKINTER/SISTEMA DESKTOP/Imagenes/app_logo_2.png")
-        nueva_imagen=imagen_arduino.resize((160,160))
+        imagen=Image.open("./PROYECTO_TIENDA/img/app_logo_2.png")
+        nueva_imagen=imagen.resize((170,170))
         render=ImageTk.PhotoImage(nueva_imagen)
         label_imagen= Label(self.Label_informacion, image= render)
         label_imagen.image=render
         label_imagen.grid(row=1,column=0,padx=10,pady=15)
 
         "--------------- opciones--------------------"
-        self.Label_titulo = Label(self.Label_informacion,text="> CONTROL DE PRODUCTOS ",fg="black",font=("Comic Sans", 15,"bold"))
-        self.Label_titulo.grid(row=2,column=0,sticky=W,padx=30,pady=9)
+        self.Label_titulo = Label(self.Label_informacion,text="> CONTROL DE PRODUCTOS ",fg="black",font=("Comic Sans", 16,"bold"))
+        self.Label_titulo.grid(row=2,column=0,sticky=W,padx=30,pady=10)
 
-        self.Label_titulo = Label(self.Label_informacion,text="> BUSCADOR DE PRODUCTOS ",fg="black",font=("Comic Sans", 15,"bold"))
-        self.Label_titulo.grid(row=3,column=0,sticky=W,padx=30,pady=9)
+        self.Label_titulo = Label(self.Label_informacion,text="> BUSCADOR DE PRODUCTOS ",fg="black",font=("Comic Sans", 16,"bold"))
+        self.Label_titulo.grid(row=3,column=0,sticky=W,padx=30,pady=10)
 
-        self.Label_titulo = Label(self.Label_informacion,text="> REGISTRO VENTAS ",fg="black",font=("Comic Sans", 15,"bold"))
-        self.Label_titulo.grid(row=4,column=0,sticky=W,padx=30,pady=9)
+        self.Label_titulo = Label(self.Label_informacion,text="> REGISTRO VENTAS ",fg="black",font=("Comic Sans", 16,"bold"))
+        self.Label_titulo.grid(row=4,column=0,sticky=W,padx=30,pady=10)
 
-        self.Label_titulo = Label(self.Label_informacion,text="> GENERACION DE REPORTE ",fg="black",font=("Comic Sans", 15,"bold"))
-        self.Label_titulo.grid(row=5,column=0,sticky=W,padx=30,pady=9)
+        self.Label_titulo = Label(self.Label_informacion,text="> GENERACION DE REPORTE ",fg="black",font=("Comic Sans", 16,"bold"))
+        self.Label_titulo.grid(row=5,column=0,sticky=W,padx=30,pady=10)
 
-        self.Label_titulo = Label(self.Label_informacion,text="Creado por Emiliano Diaz - 2023",fg="black",font=("Comic Sans",10,"bold"))
-        self.Label_titulo.grid(row=6,column=0,pady=10)
+        self.Label_titulo = Label(self.Label_informacion,text="Creado por Emiliano Diaz - 2023",fg="black",font=("Comic Sans",12,"bold"))
+        self.Label_titulo.grid(row=6,column=0,pady=85)
+        
 
         #Remove
         self.widgets_buscador_remove()
         self.widgets_crud_remove()
+        self.widgets_cliente_remove()
+        self.widgets_codigos_remove()
+
+    "--------------- WIDGETS REMOVE --------------------" 
+    def widgets_crud_remove(self):
+        self.frame_registro.grid_remove()
+        self.frame_botones_registro.grid_remove()
+        self.frame_tabla_crud.grid_remove()
+
+    def widgets_buscador_remove(self):
+        self.frame_buscar_producto.grid_remove()
+        self.frame_boton_buscar.grid_remove()
+        self.frame_tabla_buscador.grid_remove()
+
+    def widgets_informacion_remove(self):
+        self.Label_informacion.grid_remove()
+
+    def widgets_cliente_remove(self):
+        self.frame_nuevo_cliente.grid_remove()
+        self.frame_buscar_cliente.grid_remove()
+        self.frame_tabla_clientes.grid_remove()
+
+    def widgets_codigos_remove(self):
+        self.frame_codigo.grid_remove()
 
     "--------------- CRUD --------------------"               
     def Obtener_productos(self):
         records=self.tree.get_children()
         for element in records:
             self.tree.delete(element)
-        query='SELECT * FROM Productos ORDER BY Nombre desc'
+        query='SELECT * FROM Productos ORDER BY id asc'
         db_rows=self.Ejecutar_consulta(query)
         for row in db_rows:
             self.tree.insert("",0, text=row[1],values=(row[2],row[3],row[4],row[5],row[6]))
@@ -268,7 +419,6 @@ class Producto():
         self.Ventana_editar.title('EDITAR PRODUCTO')
         self.Ventana_editar.resizable(0,0)
         
-        
         #Valores ventana editar
         label_codigo=Label(self.Ventana_editar,text="Codigo del producto: ",font=("Comic Sans", 10,"bold")).grid(row=0,column=0,sticky='s',padx=5,pady=8)
         nuevo_codigo=Entry(self.Ventana_editar,textvariable=StringVar(self.Ventana_editar,value=codigo),width=25)
@@ -279,7 +429,7 @@ class Producto():
         nuevo_nombre.grid(row=1, column=1, padx=5, pady=8)
     
         label_categoria=Label(self.Ventana_editar,text="Categoria: ",font=("Comic Sans", 10,"bold")).grid(row=2,column=0,sticky='s',padx=5,pady=9)
-        nuevo_combo_categoria=ttk.Combobox(self.Ventana_editar,values=["Microcontrolador","Microordenador","Sensores","Accesorios"], width=22,state="readonly")
+        nuevo_combo_categoria=ttk.Combobox(self.Ventana_editar,values=["Componentes","Perifericos"], width=22,state="readonly")
         nuevo_combo_categoria.set(categoria)
         nuevo_combo_categoria.grid(row=2,column=1,padx=5,pady=0)
 
@@ -311,16 +461,16 @@ class Producto():
     def Buscar_productos(self):
         if(self.Validar_busqueda()):
             #Obtener todos los elementos con get_children(), que retorna una tupla de ID.
-            records=self.tree.get_children()
+            records=self.tree_buscar.get_children()
             for element in records:
-                self.tree.delete(element)
+                self.tree_buscar.delete(element)
             
             if (self.combo_buscar.get()=='Codigo'):
                 query=("SELECT * FROM Productos WHERE Codigo LIKE ? ") 
                 parameters=(self.codigo_nombre.get()+"%")
                 db_rows=self.Ejecutar_consulta(query,(parameters,))
                 for row in db_rows:
-                    self.tree.insert("",0, text=row[1],values=(row[2],row[3],row[4],row[5],row[6]))
+                    self.tree_buscar.insert("",0, text=row[1],values=(row[2],row[3],row[4],row[5],row[6]))
                 if(list(self.tree.get_children())==[]):
                     messagebox.showerror("ERROR","Producto no encontrado")
             else:
@@ -328,11 +478,11 @@ class Producto():
                 parameters=("%"+self.codigo_nombre.get()+"%")
                 db_rows=self.Ejecutar_consulta(query,(parameters,))
                 for row in db_rows:
-                    self.tree.insert("",0, text=row[1],values=(row[2],row[3],row[4],row[5],row[6]))
+                    self.tree_buscar.insert("",0, text=row[1],values=(row[2],row[3],row[4],row[5],row[6]))
                 if(list(self.tree.get_children())==[]):
                     messagebox.showerror("ERROR","Producto no encontrado")
 
-    "--------------- OTRAS FUNCIONES --------------------"
+    "--------------- OTRAS FUNCIONES PRODUCTOS--------------------"
     def Ejecutar_consulta(self, query, parameters=()):
         with sqlite3.connect(self.db_name) as conexion:
             cursor=conexion.cursor()
@@ -369,8 +519,147 @@ class Producto():
         else:
             messagebox.showerror("ERROR EN REGISTRO", "Codigo registrado anteriormente")
 
+    "--------------- CLIENTES--------------------"
+    def Obtener_clientes(self):
+        records=self.tree_cliente.get_children()
+        for element in records:
+            self.tree_cliente.delete(element)
+        query='SELECT * FROM Clientes'
+        db_rows=self.Ejecutar_consulta(query)
+        for row in db_rows:
+            self.tree_cliente.insert("",0, text=row[0],values=(row[1],row[2],row[3],row[4],row[5]))
+            
+    def Agregar_cliente(self):
+        if self.Validar_formulario_completo_cliente() and self.Validar_registrar_cliente():
+            query='INSERT INTO Clientes VALUES(?, ?, ?, ?, ?, ?)'
+            parameters = (self.dni.get(),self.nombres.get(),self.apellidos.get(),self.telefono.get(),self.email.get(),self.direccion.get())
+            self.Ejecutar_consulta(query, parameters)
+            messagebox.showinfo("REGISTRO EXITOSO", f'Cliente registrado: {self.dni.get()}')
+            print('REGISTRADO')
+            self.Limpiar_formulario_cliente()
+        self.Obtener_clientes()
+
+    def Eliminar_cliente(self):
+        try:
+            self.tree_cliente.item(self.tree_cliente.selection())['text']
+        except IndexError as e:
+            messagebox.showerror("ERROR","Porfavor selecciona un elemento") 
+            return
+        dato=self.tree_cliente.item(self.tree_cliente.selection())['text']
+        nombre=self.tree_cliente.item(self.tree_cliente.selection())['values'][1]
+        query="DELETE FROM Clientes WHERE DNI = ?"
+        respuesta=messagebox.askquestion("ADVERTENCIA",f"¿Seguro que desea eliminar el cliente: {dato} - {nombre}?")
+        if respuesta == 'yes':
+            self.Ejecutar_consulta(query,(dato,))
+            self.Obtener_clientes()
+            messagebox.showinfo('EXITO',f'Cliente eliminado: {dato} - {nombre}')
+        else:
+            messagebox.showerror('ERROR',f'Error al eliminar el producto: {dato} - {nombre}')
+
+    def Editar_cliente(self):
+        try:
+            self.tree_cliente.item(self.tree_cliente.selection())['text']
+        except IndexError as e:
+            messagebox.showerror("ERROR","Porfavor selecciona un elemento") 
+            return
+        dni=self.tree_cliente.item(self.tree_cliente.selection())['text']
+        nombres=self.tree_cliente.item(self.tree_cliente.selection())['values'][0]
+        apellidos=self.tree_cliente.item(self.tree_cliente.selection())['values'][1]
+        telefono=self.tree_cliente.item(self.tree_cliente.selection())['values'][2]
+        email=self.tree_cliente.item(self.tree_cliente.selection())['values'][3]
+        direccion=self.tree_cliente.item(self.tree_cliente.selection())['values'][4]
+        
+        self.Ventana_editar_cliente = Toplevel()
+        self.Ventana_editar_cliente.title('EDITAR CLIENTE')
+        self.Ventana_editar_cliente.resizable(0,0)
+        
+        #Valores ventana editar
+        label_dni=Label(self.Ventana_editar_cliente,text="DNI: ",font=("Comic Sans", 10,"bold")).grid(row=0,column=0,sticky='s',padx=5,pady=8)
+        nuevo_dni=Entry(self.Ventana_editar_cliente,textvariable=StringVar(self.Ventana_editar_cliente,value=dni),width=25)
+        nuevo_dni.grid(row=0, column=1, padx=5, pady=8)
+        
+        label_nombres=Label(self.Ventana_editar_cliente,text="Nombres: ",font=("Comic Sans", 10,"bold")).grid(row=1,column=0,sticky='s',padx=5,pady=8)
+        nuevo_nombres=Entry(self.Ventana_editar_cliente,textvariable=StringVar(self.Ventana_editar_cliente,value=nombres),width=25)
+        nuevo_nombres.grid(row=1, column=1, padx=5, pady=8)
+    
+        label_apellidos=Label(self.Ventana_editar_cliente,text="Apellidos: ",font=("Comic Sans", 10,"bold")).grid(row=2,column=0,sticky='s',padx=5,pady=9)
+        nuevo_apellidos=Entry(self.Ventana_editar_cliente,textvariable=StringVar(self.Ventana_editar_cliente,value=apellidos),width=25)
+        nuevo_apellidos.grid(row=2,column=1,padx=5,pady=0)
+
+        label_telefono=Label(self.Ventana_editar_cliente,text="Telefono: ",font=("Comic Sans", 10,"bold")).grid(row=0,column=2,sticky='s',padx=5,pady=8)
+        nueva_telefono=Entry(self.Ventana_editar_cliente,textvariable=StringVar(self.Ventana_editar_cliente,value=telefono),width=25)
+        nueva_telefono.grid(row=0, column=3, padx=5, pady=8)
+
+        label_email=Label(self.Ventana_editar_cliente,text="E-mail: ",font=("Comic Sans", 10,"bold")).grid(row=1,column=2,sticky='s',padx=5,pady=8)
+        nuevo_email=Entry(self.Ventana_editar_cliente,textvariable=StringVar(self.Ventana_editar_cliente,value=email),width=25)
+        nuevo_email.grid(row=1, column=3, padx=5, pady=8)
+        
+        label_direccion=Label(self.Ventana_editar_cliente,text="Direccion: ",font=("Comic Sans", 10,"bold")).grid(row=2,column=2,sticky='s',padx=10,pady=8)
+        nueva_direccion=Entry(self.Ventana_editar_cliente,textvariable=StringVar(self.Ventana_editar_cliente,value=direccion),width=25)
+        nueva_direccion.grid(row=2, column=3, padx=10, pady=8)
+
+        boton_actualizar_cliente=Button(self.Ventana_editar_cliente,text="ACTUALIZAR",command= lambda: self.Actualizar_cliente(nuevo_dni.get(),nuevo_nombres.get(),nuevo_apellidos.get(),nueva_telefono.get(),nuevo_email.get(),nueva_direccion.get(),dni,nombres),height=2,width=20,bg="black",fg="white",font=("Comic Sans", 10,"bold"))
+        boton_actualizar_cliente.grid(row=3, column=1,columnspan=2, padx=10, pady=15)
+        
+        self.Ventana_editar_cliente.mainloop()      
+        
+    def Actualizar_cliente(self,nuevo_dni,nuevo_nombres,nuevo_apelllidos,nueva_telefono,nuevo_email,nueva_direccion,dni,nombres):
+        query='UPDATE Clientes SET DNI = ?, Nombres = ?, Apellidos = ?, Telefono =?, Email=?, Direccion =? WHERE DNI = ? AND Nombres =?'
+        parameters=(nuevo_dni,nuevo_nombres,nuevo_apelllidos,nueva_telefono,nuevo_email,nueva_direccion,dni,nombres)
+        self.Ejecutar_consulta(query,parameters)
+        messagebox.showinfo('EXITO',f'Cliente actualizado:{nuevo_dni}')
+        self.Ventana_editar_cliente.destroy()
+        self.Obtener_clientes()
+
+    def Buscar_cliente(self):
+            if(self.Validar_busqueda_cliente()):
+                #Obtener todos los elementos con get_children(), que retorna una tupla de ID.
+                records=self.tree_cliente.get_children()
+                for element in records:
+                    self.tree_cliente.delete(element)
+                    query=("SELECT * FROM Clientes WHERE DNI LIKE ? ") 
+                    parameters=(self.buscar_dni.get()+"%")
+                    db_rows=self.Ejecutar_consulta(query,(parameters,))
+                    for row in db_rows:
+                        self.tree_cliente.delete(*self.tree_cliente.get_children())
+                        self.tree_cliente.insert("",0, text=row[0],values=(row[1],row[2],row[3],row[4],row[5]))
+                      
+                    if(list(self.tree_cliente.get_children())==[]):
+                        messagebox.showerror("ERROR","Cliente no encontrado")
+
+    "--------------- OTRAS FUNCIONES CLIENTES--------------------"
+    def Validar_formulario_completo_cliente(self):
+        if len(self.dni.get()) !=0 and len(self.nombres.get()) !=0 and len(self.apellidos.get()) !=0 and len(self.telefono.get()) !=0 and len(self.email.get()) !=0 and len(self.direccion.get()) !=0:
+            return True
+        else:
+             messagebox.showerror("ERROR", "Complete todos los campos del formulario")
+
+    def Validar_registrar_cliente(self):
+        parameters= self.dni.get()
+        query="SELECT * FROM Clientes WHERE DNI = ?"
+        dato = self.Ejecutar_consulta(query,(parameters,))
+        if (dato.fetchall() == []):
+            return True
+        else:
+            messagebox.showerror("ERROR EN REGISTRO", "DNI registrado anteriormente")
+
+    def Limpiar_formulario_cliente(self):
+        self.dni.delete(0, END)
+        self.nombres.delete(0, END)
+        self.apellidos.delete(0, END)
+        self.telefono.delete(0, END)
+        self.email.delete(0, END)
+        self.direccion.delete(0, END) 
+
+    def Validar_busqueda_cliente(self):
+        if len(self.buscar_dni.get()) !=0:
+            return True
+        else:
+             self.tree_cliente.delete(*self.tree_cliente.get_children())
+             messagebox.showerror("ERROR", "Complete todos los campos para la busqueda") 
+
 if __name__ == '__main__':
     ventana_producto=Tk()
     label_crud=Label(ventana_producto)
-    application=Producto(ventana_producto)
+    application=Tienda(ventana_producto)
     ventana_producto.mainloop()

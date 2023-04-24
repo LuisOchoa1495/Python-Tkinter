@@ -9,7 +9,7 @@ from tkinter import messagebox
 #Python image Library
 from PIL import ImageTk, Image
 import sqlite3
-from Buscador import *
+from Buscador import Producto
 
 class Login:
     db_name='database_proyecto.db'
@@ -85,8 +85,8 @@ class Login:
                 password= self.password_login.get()
                 dato = self.Validar_login(dni, password)
                 if (dato != []):
-                    #Producto.__init__(ventana_login)
-                    messagebox.showinfo("BIENVENIDO", "Datos ingresados correctamente") 
+                    messagebox.showinfo("BIENVENIDO", "Datos ingresados correctamente")
+                    Producto.__init__(self,ventana_producto=ventana_login)
                 else:
                     messagebox.showerror("ERROR DE INGRESO", "DNI o contraseña incorrecto") 
                 self.Limpiar_login()
