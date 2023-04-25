@@ -34,8 +34,8 @@ class Tienda():
         #Acciones de menu
         self.boton_registrar=Productos.add_command(label="Registrar",command= self.widgets_crud,image=self.img_registrar,compound=LEFT)
         self.boton_buscar=Productos.add_command(label="Buscar",command=self.widgets_buscador,image=self.img_buscar,compound=LEFT)
-        self.boton_nueva_venta=Ventas.add_command(label="Nueva Venta",command=self.widgets_buscador,image=self.img_nueva_venta,compound=LEFT)        
-        self.boton_ventas=Ventas.add_command(label="Ventas",command=self.widgets_buscador,image=self.img_ventas,compound=LEFT)        
+        self.boton_nueva_venta=Ventas.add_command(label="Nueva Venta",command=self.widgets_nueva_venta,image=self.img_nueva_venta,compound=LEFT)        
+        self.boton_ventas=Ventas.add_command(label="Ventas",command=self.widgets_ventas,image=self.img_ventas,compound=LEFT)        
         self.boton_cliente=Ventas.add_command(label="Clientes",command=self.widgets_cliente,image=self.img_cliente,compound=LEFT)        
         self.boton_informacion=Informacion.add_command(label="Codigo Producto",command=self.widgets_codigos,image=self.img_codigo,compound=LEFT)
         self.boton_informacion=Informacion.add_command(label="Informacion del sistema",command=self.widgets_informacion,image=self.img_informacion,compound=LEFT)
@@ -50,6 +50,15 @@ class Tienda():
         self.frame_buscar_producto = LabelFrame(ventana_producto, text="Buscar producto",font=("Comic Sans", 10,"bold"),pady=10)
         self.frame_boton_buscar=LabelFrame(ventana_producto)
         self.frame_tabla_buscador=LabelFrame(ventana_producto)
+        #widgets nueva ventas
+        self.frame_dni_venta=LabelFrame(ventana_producto)
+        self.frame_nueva_venta = LabelFrame(ventana_producto,text="Nueva venta",font=("Comic Sans", 10,"bold"),pady=10)
+        self.frame_finalizar_venta=LabelFrame(ventana_producto)
+        self.frame_tabla_nueva_venta=LabelFrame(ventana_producto)
+        #widgets ventas
+        self.frame_buscar_ventas = LabelFrame(ventana_producto,text="Buscar venta",font=("Comic Sans", 10,"bold"),pady=10)
+        self.frame_boton_buscar_ventas=LabelFrame(ventana_producto)
+        self.frame_tabla_ventas=LabelFrame(ventana_producto)
         #widgets cliente
         self.frame_nuevo_cliente = LabelFrame(ventana_producto,text="Nuevo Cliente",font=("Comic Sans", 10,"bold"),pady=10)
         self.frame_botones_registro_cliente = LabelFrame(ventana_producto)
@@ -100,7 +109,7 @@ class Tienda():
         self.cantidad=Entry(self.frame_registro,width=25)
         self.cantidad.grid(row=0, column=3, padx=5, pady=8)
 
-        label_precio=Label(self.frame_registro,text="Precio ($.): ",font=("Comic Sans", 10,"bold")).grid(row=1,column=2,sticky='s',padx=5,pady=8)
+        label_precio=Label(self.frame_registro,text="Precio ($): ",font=("Comic Sans", 10,"bold")).grid(row=1,column=2,sticky='s',padx=5,pady=8)
         self.precio=Entry(self.frame_registro,width=25)
         self.precio.grid(row=1, column=3, padx=5, pady=8)
 
@@ -148,6 +157,8 @@ class Tienda():
         self.widgets_informacion_remove()
         self.widgets_cliente_remove()
         self.widgets_codigos_remove()
+        self.widgets_ventas_remove()
+        self.widgets_nueva_venta_remove()
 
     def widgets_buscador(self):
         
@@ -204,6 +215,8 @@ class Tienda():
         self.widgets_informacion_remove()
         self.widgets_cliente_remove()
         self.widgets_codigos_remove()
+        self.widgets_ventas_remove()
+        self.widgets_nueva_venta_remove()
 
     def widgets_cliente(self):
         
@@ -287,6 +300,8 @@ class Tienda():
         self.widgets_crud_remove()
         self.widgets_informacion_remove()
         self.widgets_codigos_remove()
+        self.widgets_ventas_remove()
+        self.widgets_nueva_venta_remove()
 
     def widgets_codigos(self):
         self.frame_codigo.config(bd=0)
@@ -302,6 +317,8 @@ class Tienda():
         self.widgets_crud_remove()
         self.widgets_cliente_remove()
         self.widgets_informacion_remove()
+        self.widgets_ventas_remove()
+        self.widgets_nueva_venta_remove()
 
     def widgets_informacion(self):
 
@@ -342,6 +359,134 @@ class Tienda():
         self.widgets_crud_remove()
         self.widgets_cliente_remove()
         self.widgets_codigos_remove()
+        self.widgets_ventas_remove()
+        self.widgets_nueva_venta_remove()
+
+    def widgets_nueva_venta(self):
+        "--------------- Frame marco dni_ventas --------------------"
+        self.frame_dni_venta.config(bd=1)
+        self.frame_dni_venta.grid(row=1,column=0,padx=5,pady=5)
+
+        label_dni_venta=Label(self.frame_dni_venta,text="DNI: ",font=("Comic Sans", 10,"bold")).grid(row=0,column=0,sticky='s',padx=5,pady=5)
+        self.dni_venta=Entry(self.frame_dni_venta,width=25)
+        self.dni_venta.focus()
+        self.dni_venta.grid(row=0, column=1, padx=10, pady=5)
+
+        "--------------- Frame marco nueva venta --------------------"
+        self.frame_nueva_venta.config(bd=2)
+        self.frame_nueva_venta.grid(row=2,column=0,padx=5,pady=5)
+
+        label_codigo_producto_venta=Label(self.frame_nueva_venta,text="Codigo: ",font=("Comic Sans", 10,"bold")).grid(row=0,column=0,sticky='s',padx=5,pady=5)
+        self.codigo_producto_venta=Entry(self.frame_nueva_venta,width=25)
+        self.codigo_producto_venta.focus()
+        self.codigo_producto_venta.grid(row=0, column=1, padx=10, pady=5)
+
+        label_cantidad_producto_venta=Label(self.frame_nueva_venta,text="Cantidad: ",font=("Comic Sans", 10,"bold")).grid(row=1,column=0,sticky='s',padx=5,pady=5)
+        self.cantidad_producto_venta=Entry(self.frame_nueva_venta,width=25)
+        self.cantidad_producto_venta.grid(row=1, column=1, padx=10, pady=5)
+
+        self.boton_agregar_producto_venta=Button(self.frame_nueva_venta,text="AGREGAR",command=self.Buscar_productos,height=1,width=15,bg="green",fg="white",font=("Comic Sans", 10,"bold"))
+        self.boton_agregar_producto_venta.grid(row=0,column=2,padx=5,pady=5)
+
+        self.boton_eliminar_producto_venta=Button(self.frame_nueva_venta,text="ELIMINAR",command=self.Buscar_productos,height=1,width=15,bg="red",fg="white",font=("Comic Sans", 10,"bold"))
+        self.boton_eliminar_producto_venta.grid(row=1,column=2,padx=5,pady=5)
+
+        "--------------- Tabla --------------------"
+        self.frame_tabla_nueva_venta.config(bd=2)
+        self.frame_tabla_nueva_venta.grid(row=3,column=0,padx=5,pady=5)
+
+        self.tree_nueva_venta=ttk.Treeview(self.frame_tabla_nueva_venta,height=11, columns=("columna1","columna2","columna3","columna4","columna5"))
+        self.tree_nueva_venta.heading("#0",text='Codigo', anchor=CENTER)
+        self.tree_nueva_venta.column("#0", width=90, minwidth=75, stretch=NO)
+        
+        self.tree_nueva_venta.heading("columna1",text='Producto', anchor=CENTER)
+        self.tree_nueva_venta.column("columna1", width=150, minwidth=75, stretch=NO)
+        
+        self.tree_nueva_venta.heading("columna2",text='Descripcion', anchor=CENTER)
+        self.tree_nueva_venta.column("columna2", width=150, minwidth=75, stretch=NO)
+                
+        self.tree_nueva_venta.heading("columna3",text='Precio', anchor=CENTER)
+        self.tree_nueva_venta.column("columna3", width=70, minwidth=60, stretch=NO)
+        
+        self.tree_nueva_venta.heading("columna4",text='Cantidad', anchor=CENTER)
+        self.tree_nueva_venta.column("columna4", width=70, minwidth=60, stretch=NO)
+
+        self.tree_nueva_venta.heading("columna5",text='Subtotal', anchor=CENTER)
+
+        self.tree_nueva_venta.grid(row=0,column=0,sticky=E)
+
+        "--------------- Finalizar venta --------------------"
+        self.frame_finalizar_venta.config(bd=1)
+        self.frame_finalizar_venta.grid(row=4,column=0,padx=5,pady=5,sticky=E)
+
+        self.boton_finalizar_venta=Button(self.frame_finalizar_venta,text="Finalizar venta",command=self.Buscar_productos,height=2,width=15,bg="black",fg="white",font=("Comic Sans", 12,"bold"))
+        self.boton_finalizar_venta.grid(row=0,column=0,padx=5,pady=5)       
+
+        label_venta_total=Label(self.frame_finalizar_venta,text="Venta total ($): ",font=("Comic Sans", 12,"bold")).grid(row=0,column=1,padx=5,pady=5)
+        self.venta_total=Label(self.frame_finalizar_venta,text="0.00",font=("Comic Sans", 12,"bold"),height=1,width=10,bg="blue",fg="white")
+        self.venta_total.grid(row=0, column=2, padx=10, pady=5)
+
+
+        self.widgets_crud_remove()
+        self.widgets_codigos_remove()
+        self.widgets_buscador_remove()
+        self.widgets_informacion_remove()
+        self.widgets_cliente_remove()
+        self.widgets_ventas_remove()  
+          
+    def widgets_ventas(self):
+        "--------------- Frame marco ventas --------------------"
+        self.frame_buscar_ventas.config(bd=2)
+        self.frame_buscar_ventas.grid(row=1,column=0,padx=5,pady=5)
+        
+        "--------------- Formulario Buscar ventas--------------------"
+        self.label_buscar_venta=Label(self.frame_buscar_ventas,text="Buscar Por: ",font=("Comic Sans", 10,"bold")).grid(row=0,column=0,sticky='s',padx=5,pady=5)
+        self.combo_buscar_venta=ttk.Combobox(self.frame_buscar_ventas,values=["DNI","Fecha"], width=22,state="readonly")
+        self.combo_buscar_venta.current(0)
+        self.combo_buscar_venta.grid(row=0,column=1,padx=5,pady=5)
+
+        label_dni_fecha=Label(self.frame_buscar_ventas,text="DNI / Fecha: ",font=("Comic Sans", 10,"bold")).grid(row=0,column=2,sticky='s',padx=5,pady=5)
+        self.dni_fecha=Entry(self.frame_buscar_ventas,width=25)
+        self.dni_fecha.focus()
+        self.dni_fecha.grid(row=0, column=3, padx=10, pady=5)
+
+        "--------------- Frame marco ventas--------------------"
+        self.frame_boton_buscar_ventas.config(bd=0)
+        self.frame_boton_buscar_ventas.grid(row=2,column=0,padx=5,pady=5)
+        "--------------- Boton --------------------"
+        self.boton_buscar_ventas=Button(self.frame_boton_buscar_ventas,text="BUSCAR",command=self.Buscar_productos,height=2,width=20,bg="black",fg="white",font=("Comic Sans", 10,"bold"))
+        self.boton_buscar_ventas.grid(row=0,column=0,padx=5,pady=5)
+
+        "--------------- Tabla --------------------"
+        self.frame_tabla_ventas.config(bd=2)
+        self.frame_tabla_ventas.grid(row=3,column=0,padx=5,pady=5)
+
+        self.tree_buscar_ventas=ttk.Treeview(self.frame_tabla_ventas,height=11, columns=("columna1","columna2","columna3","columna4","columna5"))
+        self.tree_buscar_ventas.heading("#0",text='Codigo', anchor=CENTER)
+        self.tree_buscar_ventas.column("#0", width=90, minwidth=75, stretch=NO)
+        
+        self.tree_buscar_ventas.heading("columna1",text='Fecha', anchor=CENTER)
+        self.tree_buscar_ventas.column("columna1", width=150, minwidth=75, stretch=NO)
+        
+        self.tree_buscar_ventas.heading("columna2",text='DNI', anchor=CENTER)
+        self.tree_buscar_ventas.column("columna2", width=150, minwidth=75, stretch=NO)
+                
+        self.tree_buscar_ventas.heading("columna3",text='Nombres', anchor=CENTER)
+        self.tree_buscar_ventas.column("columna3", width=70, minwidth=60, stretch=NO)
+        
+        self.tree_buscar_ventas.heading("columna4",text='Apellidos', anchor=CENTER)
+        self.tree_buscar_ventas.column("columna4", width=70, minwidth=60, stretch=NO)
+        
+        self.tree_buscar_ventas.heading("columna5",text='Venta total', anchor=CENTER)
+
+        self.tree_buscar_ventas.grid(row=0,column=0,sticky=E)
+
+        self.widgets_crud_remove()
+        self.widgets_codigos_remove()
+        self.widgets_buscador_remove()
+        self.widgets_informacion_remove()
+        self.widgets_cliente_remove()
+        self.widgets_nueva_venta_remove()
 
     "--------------- WIDGETS REMOVE --------------------" 
     def widgets_crud_remove(self):
@@ -365,12 +510,22 @@ class Tienda():
     def widgets_codigos_remove(self):
         self.frame_codigo.grid_remove()
 
+    def widgets_ventas_remove(self):
+        self.frame_buscar_ventas.grid_remove()
+        self.frame_boton_buscar_ventas.grid_remove()
+        self.frame_tabla_ventas.grid_remove()
+
+    def widgets_nueva_venta_remove(self):
+        self.frame_dni_venta.grid_remove()
+        self.frame_nueva_venta.grid_remove()
+        self.frame_tabla_nueva_venta.grid_remove()
+        self.frame_finalizar_venta.grid_remove()
     "--------------- CRUD --------------------"               
     def Obtener_productos(self):
         records=self.tree.get_children()
         for element in records:
             self.tree.delete(element)
-        query='SELECT * FROM Productos ORDER BY id asc'
+        query='SELECT * FROM Productos ORDER BY id_producto asc'
         db_rows=self.Ejecutar_consulta(query)
         for row in db_rows:
             self.tree.insert("",0, text=row[1],values=(row[2],row[3],row[4],row[5],row[6]))
@@ -437,7 +592,7 @@ class Tienda():
         nueva_cantidad=Entry(self.Ventana_editar,textvariable=StringVar(self.Ventana_editar,value=cantidad),width=25)
         nueva_cantidad.grid(row=0, column=3, padx=5, pady=8)
 
-        label_precio=Label(self.Ventana_editar,text="Precio (S/.): ",font=("Comic Sans", 10,"bold")).grid(row=1,column=2,sticky='s',padx=5,pady=8)
+        label_precio=Label(self.Ventana_editar,text="Precio ($): ",font=("Comic Sans", 10,"bold")).grid(row=1,column=2,sticky='s',padx=5,pady=8)
         nuevo_precio=Entry(self.Ventana_editar,textvariable=StringVar(self.Ventana_editar,value=precio),width=25)
         nuevo_precio.grid(row=1, column=3, padx=5, pady=8)
         
