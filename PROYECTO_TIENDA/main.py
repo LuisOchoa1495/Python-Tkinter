@@ -372,6 +372,11 @@ class Tienda():
         self.dni_venta.focus()
         self.dni_venta.grid(row=0, column=1, padx=10, pady=5)
 
+        label_medio_pago=Label(self.frame_dni_venta,text="Medio de pago: ",font=("Comic Sans", 10,"bold")).grid(row=0,column=2,sticky='s',padx=5,pady=5)
+        self.medio_pago=ttk.Combobox(self.frame_dni_venta,values=["Efectivo","Tarjeta","Transferencia"], width=22,state="readonly")
+        self.medio_pago.current(0)
+        self.medio_pago.grid(row=0,column=3,padx=5,pady=5)
+
         "--------------- Frame marco nueva venta --------------------"
         self.frame_nueva_venta.config(bd=2)
         self.frame_nueva_venta.grid(row=2,column=0,padx=5,pady=5)
@@ -385,7 +390,7 @@ class Tienda():
         self.cantidad_producto_venta=Entry(self.frame_nueva_venta,width=25)
         self.cantidad_producto_venta.grid(row=1, column=1, padx=10, pady=5)
 
-        self.boton_agregar_producto_venta=Button(self.frame_nueva_venta,text="AGREGAR",command=self.Buscar_productos,height=1,width=15,bg="green",fg="white",font=("Comic Sans", 10,"bold"))
+        self.boton_agregar_producto_venta=Button(self.frame_nueva_venta,text="AGREGAR",command=self.Agregar_producto_venta,height=1,width=15,bg="green",fg="white",font=("Comic Sans", 10,"bold"))
         self.boton_agregar_producto_venta.grid(row=0,column=2,padx=5,pady=5)
 
         self.boton_eliminar_producto_venta=Button(self.frame_nueva_venta,text="ELIMINAR",command=self.Buscar_productos,height=1,width=15,bg="red",fg="white",font=("Comic Sans", 10,"bold"))
@@ -778,10 +783,9 @@ class Tienda():
                     for row in db_rows:
                         self.tree_cliente.delete(*self.tree_cliente.get_children())
                         self.tree_cliente.insert("",0, text=row[0],values=(row[1],row[2],row[3],row[4],row[5]))
-                      
                     if(list(self.tree_cliente.get_children())==[]):
                         messagebox.showerror("ERROR","Cliente no encontrado")
-
+        
     "--------------- OTRAS FUNCIONES CLIENTES--------------------"
     def Validar_formulario_completo_cliente(self):
         if len(self.dni.get()) !=0 and len(self.nombres.get()) !=0 and len(self.apellidos.get()) !=0 and len(self.telefono.get()) !=0 and len(self.email.get()) !=0 and len(self.direccion.get()) !=0:
@@ -812,6 +816,25 @@ class Tienda():
         else:
              self.tree_cliente.delete(*self.tree_cliente.get_children())
              messagebox.showerror("ERROR", "Complete todos los campos para la busqueda") 
+
+    "--------------- VENTAS--------------------"
+
+    def Agregar_producto_venta(self):
+        codigo_busqueda=self.codigo_producto_venta.get()
+        cantidad=self.cantidad_producto_venta.get()
+        if(self.Validar_busqueda_producto_venta()):
+            query=("SELECT Codigo,Nombre,Descripcion,Precio FROM Productos WHERE Codigo = ?") 
+            parameters=(codigo_busqueda)
+            db_rows=self.Ejecutar_consulta(query,(parameters,))
+            print(db_rows)
+
+    "--------------- OTRAS FUNCIONES CLIENTES--------------------"
+    def Validar_busqueda_producto_venta(self):
+        if len(self.codigo_producto_venta.get()) !=0 and len(self.cantidad_producto_venta.get()) !=0 :
+            return True
+        else:
+                #self.tree_cliente.delete(*self.tree_cliente.get_children())
+                messagebox.showerror("ERROR", "Complete todos los campos") 
 
 if __name__ == '__main__':
     ventana_producto=Tk()
