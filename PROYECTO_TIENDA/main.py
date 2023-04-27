@@ -353,7 +353,6 @@ class Tienda():
         self.Label_titulo = Label(self.Label_informacion,text="Creado por Emiliano Diaz - 2023",fg="black",font=("Comic Sans",12,"bold"))
         self.Label_titulo.grid(row=6,column=0,pady=85)
         
-
         #Remove
         self.widgets_buscador_remove()
         self.widgets_crud_remove()
@@ -818,15 +817,19 @@ class Tienda():
              messagebox.showerror("ERROR", "Complete todos los campos para la busqueda") 
 
     "--------------- VENTAS--------------------"
-
     def Agregar_producto_venta(self):
         codigo_busqueda=self.codigo_producto_venta.get()
         cantidad=self.cantidad_producto_venta.get()
         if(self.Validar_busqueda_producto_venta()):
-            query=("SELECT Codigo,Nombre,Descripcion,Precio FROM Productos WHERE Codigo = ?") 
+            query=("SELECT Codigo,Nombre,Descripcion,Precio FROM Productos WHERE Codigo LIKE ?") 
             parameters=(codigo_busqueda)
             db_rows=self.Ejecutar_consulta(query,(parameters,))
-            print(db_rows)
+            rows=db_rows.fetchall()
+            
+            subtotal=float((rows[0][3])*cantidad)
+            rows.extend(cantidad)
+            print(subtotal)
+            #self.tree_nueva_venta.insert("",0, text=rows[0][0],values=(rows[0][1],rows[0][2],rows[0][3],rows[1][0]))
 
     "--------------- OTRAS FUNCIONES CLIENTES--------------------"
     def Validar_busqueda_producto_venta(self):
