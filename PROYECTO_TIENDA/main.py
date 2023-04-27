@@ -4,6 +4,7 @@ from tkinter import messagebox
 #Python image Library
 from PIL import ImageTk, Image
 import sqlite3
+import numpy as np
 
 class Tienda():
     db_name='tienda_diaz.db'
@@ -430,7 +431,6 @@ class Tienda():
         self.venta_total=Label(self.frame_finalizar_venta,text="0.00",font=("Comic Sans", 12,"bold"),height=1,width=10,bg="blue",fg="white")
         self.venta_total.grid(row=0, column=2, padx=10, pady=5)
 
-
         self.widgets_crud_remove()
         self.widgets_codigos_remove()
         self.widgets_buscador_remove()
@@ -771,20 +771,20 @@ class Tienda():
         self.Obtener_clientes()
 
     def Buscar_cliente(self):
-            if(self.Validar_busqueda_cliente()):
-                #Obtener todos los elementos con get_children(), que retorna una tupla de ID.
-                records=self.tree_cliente.get_children()
-                for element in records:
-                    self.tree_cliente.delete(element)
-                    query=("SELECT * FROM Clientes WHERE DNI LIKE ? ") 
-                    parameters=(self.buscar_dni.get()+"%")
-                    db_rows=self.Ejecutar_consulta(query,(parameters,))
-                    for row in db_rows:
-                        self.tree_cliente.delete(*self.tree_cliente.get_children())
-                        self.tree_cliente.insert("",0, text=row[0],values=(row[1],row[2],row[3],row[4],row[5]))
-                    if(list(self.tree_cliente.get_children())==[]):
-                        messagebox.showerror("ERROR","Cliente no encontrado")
-        
+        if(self.Validar_busqueda_cliente()):
+            #Obtener todos los elementos con get_children(), que retorna una tupla de ID.
+            records=self.tree_cliente.get_children()
+            for element in records:
+                #self.tree_cliente.delete(element)
+                query=("SELECT * FROM Clientes WHERE DNI LIKE ? ") 
+                parameters=(self.buscar_dni.get()+"%")
+                db_rows=self.Ejecutar_consulta(query,(parameters,))
+                for row in db_rows:
+                    self.tree_cliente.delete(*self.tree_cliente.get_children())
+                    self.tree_cliente.insert("",0, text=row[0],values=(row[1],row[2],row[3],row[4],row[5]))
+                if(list(self.tree_cliente.get_children())==[]):
+                    messagebox.showerror("ERROR","Cliente no encontrado")
+    
     "--------------- OTRAS FUNCIONES CLIENTES--------------------"
     def Validar_formulario_completo_cliente(self):
         if len(self.dni.get()) !=0 and len(self.nombres.get()) !=0 and len(self.apellidos.get()) !=0 and len(self.telefono.get()) !=0 and len(self.email.get()) !=0 and len(self.direccion.get()) !=0:
@@ -825,11 +825,11 @@ class Tienda():
             parameters=(codigo_busqueda)
             db_rows=self.Ejecutar_consulta(query,(parameters,))
             rows=db_rows.fetchall()
-            
-            subtotal=float((rows[0][3])*cantidad)
-            rows.extend(cantidad)
-            print(subtotal)
-            #self.tree_nueva_venta.insert("",0, text=rows[0][0],values=(rows[0][1],rows[0][2],rows[0][3],rows[1][0]))
+            subtotal=(float(rows[0][3])*float(cantidad))
+            rows.extend([cantidad,subtotal])
+            print(rows[2])
+            self.tree_nueva_venta.insert("",0, text=rows[0][0],values=(rows[0][1],rows[0][2],rows[0][3],rows[1],rows[2]))
+            self.suma_total_venta()
 
     "--------------- OTRAS FUNCIONES CLIENTES--------------------"
     def Validar_busqueda_producto_venta(self):
@@ -838,6 +838,13 @@ class Tienda():
         else:
                 #self.tree_cliente.delete(*self.tree_cliente.get_children())
                 messagebox.showerror("ERROR", "Complete todos los campos") 
+
+    def suma_total_venta(self):
+        total = 0
+        for item in self.tree_nueva_venta.get_children():    
+            celda = float(self.tree_nueva_venta.set(item, "columna5"))
+            total += celda
+        self.venta_total.config(text=total)
 
 if __name__ == '__main__':
     ventana_producto=Tk()
