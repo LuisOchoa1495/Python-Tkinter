@@ -458,7 +458,7 @@ class Tienda():
         self.frame_boton_buscar_ventas.config(bd=0)
         self.frame_boton_buscar_ventas.grid(row=2,column=0,padx=5,pady=5)
         "--------------- Boton --------------------"
-        self.boton_buscar_ventas=Button(self.frame_boton_buscar_ventas,text="BUSCAR",command=self.Buscar_productos,height=2,width=20,bg="black",fg="white",font=("Comic Sans", 10,"bold"))
+        self.boton_buscar_ventas=Button(self.frame_boton_buscar_ventas,text="BUSCAR",command=self.Buscar_venta,height=2,width=20,bg="black",fg="white",font=("Comic Sans", 10,"bold"))
         self.boton_buscar_ventas.grid(row=0,column=0,padx=5,pady=5)
 
         "--------------- Tabla --------------------"
@@ -466,20 +466,20 @@ class Tienda():
         self.frame_tabla_ventas.grid(row=3,column=0,padx=5,pady=5)
 
         self.tree_buscar_ventas=ttk.Treeview(self.frame_tabla_ventas,height=11, columns=("columna1","columna2","columna3","columna4","columna5"))
-        self.tree_buscar_ventas.heading("#0",text='Codigo', anchor=CENTER)
-        self.tree_buscar_ventas.column("#0", width=90, minwidth=75, stretch=NO)
+        self.tree_buscar_ventas.heading("#0",text='Fecha', anchor=CENTER)
+        self.tree_buscar_ventas.column("#0", width=100, minwidth=75, stretch=NO)
         
-        self.tree_buscar_ventas.heading("columna1",text='Fecha', anchor=CENTER)
-        self.tree_buscar_ventas.column("columna1", width=150, minwidth=75, stretch=NO)
+        self.tree_buscar_ventas.heading("columna1",text='DNI', anchor=CENTER)
+        self.tree_buscar_ventas.column("columna1", width=90, minwidth=60, stretch=NO)
         
-        self.tree_buscar_ventas.heading("columna2",text='DNI', anchor=CENTER)
-        self.tree_buscar_ventas.column("columna2", width=150, minwidth=75, stretch=NO)
+        self.tree_buscar_ventas.heading("columna2",text='Nombres', anchor=CENTER)
+        self.tree_buscar_ventas.column("columna2", width=90, minwidth=60, stretch=NO)
                 
-        self.tree_buscar_ventas.heading("columna3",text='Nombres', anchor=CENTER)
-        self.tree_buscar_ventas.column("columna3", width=70, minwidth=60, stretch=NO)
+        self.tree_buscar_ventas.heading("columna3",text='Apellidos', anchor=CENTER)
+        self.tree_buscar_ventas.column("columna3", width=90, minwidth=60, stretch=NO)
         
-        self.tree_buscar_ventas.heading("columna4",text='Apellidos', anchor=CENTER)
-        self.tree_buscar_ventas.column("columna4", width=70, minwidth=60, stretch=NO)
+        self.tree_buscar_ventas.heading("columna4",text='Medio de pago', anchor=CENTER)
+        self.tree_buscar_ventas.column("columna4", width=150, minwidth=75, stretch=NO)
         
         self.tree_buscar_ventas.heading("columna5",text='Venta total', anchor=CENTER)
 
@@ -623,7 +623,6 @@ class Tienda():
             records=self.tree_buscar.get_children()
             for element in records:
                 self.tree_buscar.delete(element)
-            
             if (self.combo_buscar.get()=='Codigo'):
                 query=("SELECT * FROM Productos WHERE Codigo LIKE ? ") 
                 parameters=(self.codigo_nombre.get()+"%")
@@ -835,19 +834,42 @@ class Tienda():
     def Finalizar_venta(self):
         fecha=datetime.now()
         formato_fecha=fecha.strftime('%d/%m/%Y')
-        monto_total=self.monto_total
-        print(monto_total)
+        print(self.monto_total)
         
         query='INSERT INTO Ventas VALUES(NULL, ?, ?, ?,?)'
-        parameters = (self.dni_venta.get(),formato_fecha,self.combo_medio_pago.get(),monto_total)
+        parameters = (self.dni_venta.get(),formato_fecha,self.combo_medio_pago.get(),self.monto_total)
         print('REGISTRADO')
         respuesta=messagebox.askquestion("ADVERTENCIA",f"¿Seguro que desea terminar la venta?")
         if respuesta == 'yes':
             self.Ejecutar_consulta(query, parameters)
-            messagebox.showinfo("VENTA FINALIZADA", f'Monto total de ven: {self.monto_total.get()}')
+            messagebox.showinfo("VENTA FINALIZADA", f'Monto total de ven: {self.monto_total}')
+            self.Limpiar_venta_finalizada()
         else:
             messagebox.showerror('ERROR',f'Error al eliminar el producto')
-        
+    
+    def Buscar_venta(self):
+        if(self.Validar_busqueda_ventas()):
+            #Obtener todos los elementos con get_children(), que retorna una tupla de ID.
+            records=self.tree_buscar_ventas.get_children()
+            for element in records:
+                self.tree_buscar_ventas.delete(element)
+            if (self.combo_buscar_venta.get()=='DNI'):
+                query=("SELECT Fecha,DNI,Clientes.Nombres,Clientes.Apellidos , Medio_pago, Total FROM Ventas INNER JOIN Clientes on Ventas.dni_cliente=Clientes.DNI WHERE DNI LIKE ? ") 
+                parameters=(self.dni_fecha.get()+"%")
+                db_rows=self.Ejecutar_consulta(query,(parameters,))
+                for row in db_rows:
+                    self.tree_buscar_ventas.insert("",0, text=row[0],values=(row[1],row[2],row[3],row[4],row[5]))
+                if(list(self.tree_buscar_ventas.get_children())==[]):
+                    messagebox.showerror("ERROR","Ventas no encontradas")
+            else:
+                query=("SELECT Fecha,DNI,Clientes.Nombres,Clientes.Apellidos , Medio_pago, Total FROM Ventas INNER JOIN Clientes on Ventas.dni_cliente=Clientes.DNI WHERE Fecha LIKE ? ")
+                parameters=("%"+self.dni_fecha.get()+"%")
+                db_rows=self.Ejecutar_consulta(query,(parameters,))
+                for row in db_rows:
+                    self.tree_buscar_ventas.insert("",0, text=row[0],values=(row[1],row[2],row[3],row[4],row[5]))
+                if(list(self.tree_buscar_ventas.get_children())==[]):
+                    messagebox.showerror("ERROR","Ventas no encontradas")
+
     "--------------- OTRAS FUNCIONES CLIENTES--------------------"
     def Validar_busqueda_producto_venta(self):
         if len(self.codigo_producto_venta.get()) !=0 and len(self.cantidad_producto_venta.get()) !=0 :
@@ -880,6 +902,19 @@ class Tienda():
     def Limpiar_nueva_venta(self):
         self.codigo_producto_venta.delete(0,END)
         self.cantidad_producto_venta.delete(0,END)
+
+    def Limpiar_venta_finalizada(self):
+        self.dni_venta.delete(0,END)
+        records=self.tree_nueva_venta.get_children()
+        for element in records:
+            self.tree_nueva_venta.delete(element)
+
+    def Validar_busqueda_ventas(self):
+        if len(self.dni_fecha.get()) !=0:
+            return True
+        else:
+             self.tree_buscar_ventas.delete(*self.tree_buscar_ventas.get_children())
+             messagebox.showerror("ERROR", "Complete todos los campos para la busqueda") 
 
 if __name__ == '__main__':
     ventana_producto=Tk()
