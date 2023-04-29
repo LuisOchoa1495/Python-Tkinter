@@ -4,7 +4,7 @@ from tkinter import messagebox
 #Python image Library
 from PIL import ImageTk, Image
 import sqlite3
-import numpy as np
+from datetime import datetime
 
 class Tienda():
     db_name='tienda_diaz.db'
@@ -373,9 +373,9 @@ class Tienda():
         self.dni_venta.grid(row=0, column=1, padx=10, pady=5)
 
         label_medio_pago=Label(self.frame_dni_venta,text="Medio de pago: ",font=("Comic Sans", 10,"bold")).grid(row=0,column=2,sticky='s',padx=5,pady=5)
-        self.medio_pago=ttk.Combobox(self.frame_dni_venta,values=["Efectivo","Tarjeta","Transferencia"], width=22,state="readonly")
-        self.medio_pago.current(0)
-        self.medio_pago.grid(row=0,column=3,padx=5,pady=5)
+        self.combo_medio_pago=ttk.Combobox(self.frame_dni_venta,values=["Efectivo","Tarjeta","Transferencia"], width=22,state="readonly")
+        self.combo_medio_pago.current(0)
+        self.combo_medio_pago.grid(row=0,column=3,padx=5,pady=5)
 
         "--------------- Frame marco nueva venta --------------------"
         self.frame_nueva_venta.config(bd=2)
@@ -393,7 +393,7 @@ class Tienda():
         self.boton_agregar_producto_venta=Button(self.frame_nueva_venta,text="AGREGAR",command=self.Agregar_producto_venta,height=1,width=15,bg="green",fg="white",font=("Comic Sans", 10,"bold"))
         self.boton_agregar_producto_venta.grid(row=0,column=2,padx=5,pady=5)
 
-        self.boton_eliminar_producto_venta=Button(self.frame_nueva_venta,text="ELIMINAR",command=self.Buscar_productos,height=1,width=15,bg="red",fg="white",font=("Comic Sans", 10,"bold"))
+        self.boton_eliminar_producto_venta=Button(self.frame_nueva_venta,text="ELIMINAR",command=self.Eliminar_producto_venta,height=1,width=15,bg="red",fg="white",font=("Comic Sans", 10,"bold"))
         self.boton_eliminar_producto_venta.grid(row=1,column=2,padx=5,pady=5)
 
         "--------------- Tabla --------------------"
@@ -424,7 +424,7 @@ class Tienda():
         self.frame_finalizar_venta.config(bd=1)
         self.frame_finalizar_venta.grid(row=4,column=0,padx=5,pady=5,sticky=E)
 
-        self.boton_finalizar_venta=Button(self.frame_finalizar_venta,text="Finalizar venta",command=self.Buscar_productos,height=2,width=15,bg="black",fg="white",font=("Comic Sans", 12,"bold"))
+        self.boton_finalizar_venta=Button(self.frame_finalizar_venta,text="Finalizar venta",command=self.Finalizar_venta,height=2,width=15,bg="black",fg="white",font=("Comic Sans", 12,"bold"))
         self.boton_finalizar_venta.grid(row=0,column=0,padx=5,pady=5)       
 
         label_venta_total=Label(self.frame_finalizar_venta,text="Venta total ($): ",font=("Comic Sans", 12,"bold")).grid(row=0,column=1,padx=5,pady=5)
@@ -784,7 +784,7 @@ class Tienda():
                     self.tree_cliente.insert("",0, text=row[0],values=(row[1],row[2],row[3],row[4],row[5]))
                 if(list(self.tree_cliente.get_children())==[]):
                     messagebox.showerror("ERROR","Cliente no encontrado")
-    
+        
     "--------------- OTRAS FUNCIONES CLIENTES--------------------"
     def Validar_formulario_completo_cliente(self):
         if len(self.dni.get()) !=0 and len(self.nombres.get()) !=0 and len(self.apellidos.get()) !=0 and len(self.telefono.get()) !=0 and len(self.email.get()) !=0 and len(self.direccion.get()) !=0:
@@ -829,8 +829,25 @@ class Tienda():
             rows.extend([cantidad,subtotal])
             print(rows[2])
             self.tree_nueva_venta.insert("",0, text=rows[0][0],values=(rows[0][1],rows[0][2],rows[0][3],rows[1],rows[2]))
-            self.suma_total_venta()
+            self.Limpiar_nueva_venta()
+            self.Suma_total_venta()
 
+    def Finalizar_venta(self):
+        fecha=datetime.now()
+        formato_fecha=fecha.strftime('%d/%m/%Y')
+        monto_total=self.monto_total
+        print(monto_total)
+        
+        query='INSERT INTO Ventas VALUES(NULL, ?, ?, ?,?)'
+        parameters = (self.dni_venta.get(),formato_fecha,self.combo_medio_pago.get(),monto_total)
+        print('REGISTRADO')
+        respuesta=messagebox.askquestion("ADVERTENCIA",f"¿Seguro que desea terminar la venta?")
+        if respuesta == 'yes':
+            self.Ejecutar_consulta(query, parameters)
+            messagebox.showinfo("VENTA FINALIZADA", f'Monto total de ven: {self.monto_total.get()}')
+        else:
+            messagebox.showerror('ERROR',f'Error al eliminar el producto')
+        
     "--------------- OTRAS FUNCIONES CLIENTES--------------------"
     def Validar_busqueda_producto_venta(self):
         if len(self.codigo_producto_venta.get()) !=0 and len(self.cantidad_producto_venta.get()) !=0 :
@@ -839,12 +856,30 @@ class Tienda():
                 #self.tree_cliente.delete(*self.tree_cliente.get_children())
                 messagebox.showerror("ERROR", "Complete todos los campos") 
 
-    def suma_total_venta(self):
-        total = 0
+    def Suma_total_venta(self):
+        self.monto_total = 0
         for item in self.tree_nueva_venta.get_children():    
             celda = float(self.tree_nueva_venta.set(item, "columna5"))
-            total += celda
-        self.venta_total.config(text=total)
+            self.monto_total += celda
+        self.venta_total.config(text=self.monto_total)
+    
+    def Eliminar_producto_venta(self):
+        try:
+            item=self.tree_nueva_venta.selection()
+        except IndexError as e:
+            messagebox.showerror("ERROR","Porfavor selecciona un elemento") 
+            return
+        respuesta=messagebox.askquestion("ADVERTENCIA",f"¿Seguro que desea eliminar el producto?")
+        if respuesta == 'yes':
+            self.tree_nueva_venta.delete(item)
+            messagebox.showinfo('EXITO',f'Producto eliminado')
+            self.Suma_total_venta()
+        else:
+            messagebox.showerror('ERROR',f'Error al eliminar el producto')
+
+    def Limpiar_nueva_venta(self):
+        self.codigo_producto_venta.delete(0,END)
+        self.cantidad_producto_venta.delete(0,END)
 
 if __name__ == '__main__':
     ventana_producto=Tk()
