@@ -22,7 +22,7 @@ class Tienda():
         Informacion=Menu(menubar,tearoff=0)
         menubar.add_cascade(label="Productos",menu=Productos)
         menubar.add_cascade(label="Ventas",menu=Ventas)
-        menubar.add_cascade(label="Reportes",menu=Reportes)
+        #menubar.add_cascade(label="Reportes",menu=Reportes)
         menubar.add_cascade(label="Ayuda",menu=Informacion)
         #Iconos
         self.img_registrar=PhotoImage(file="./PROYECTO_TIENDA/img/registrar.png")
@@ -467,7 +467,7 @@ class Tienda():
 
         self.tree_buscar_ventas=ttk.Treeview(self.frame_tabla_ventas,height=11, columns=("columna1","columna2","columna3","columna4","columna5"))
         self.tree_buscar_ventas.heading("#0",text='Fecha', anchor=CENTER)
-        self.tree_buscar_ventas.column("#0", width=100, minwidth=75, stretch=NO)
+        self.tree_buscar_ventas.column("#0", width=150, minwidth=75, stretch=NO)
         
         self.tree_buscar_ventas.heading("columna1",text='DNI', anchor=CENTER)
         self.tree_buscar_ventas.column("columna1", width=90, minwidth=60, stretch=NO)
@@ -479,7 +479,7 @@ class Tienda():
         self.tree_buscar_ventas.column("columna3", width=90, minwidth=60, stretch=NO)
         
         self.tree_buscar_ventas.heading("columna4",text='Medio de pago', anchor=CENTER)
-        self.tree_buscar_ventas.column("columna4", width=150, minwidth=75, stretch=NO)
+        self.tree_buscar_ventas.column("columna4", width=110, minwidth=75, stretch=NO)
         
         self.tree_buscar_ventas.heading("columna5",text='Venta total', anchor=CENTER)
 
@@ -833,7 +833,7 @@ class Tienda():
 
     def Finalizar_venta(self):
         fecha=datetime.now()
-        formato_fecha=fecha.strftime('%d/%m/%Y')
+        formato_fecha=fecha.strftime('%d/%m/%Y  %H:%M:%S')
         print(self.monto_total)
         
         query='INSERT INTO Ventas VALUES(NULL, ?, ?, ?,?)'
@@ -879,7 +879,7 @@ class Tienda():
                 messagebox.showerror("ERROR", "Complete todos los campos") 
 
     def Suma_total_venta(self):
-        self.monto_total = 0
+        self.monto_total = 0.00
         for item in self.tree_nueva_venta.get_children():    
             celda = float(self.tree_nueva_venta.set(item, "columna5"))
             self.monto_total += celda
